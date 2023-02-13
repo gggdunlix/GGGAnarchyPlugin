@@ -1,0 +1,4 @@
+name: GGG-Anarchy
+main: ml.gggrealms.gggmcanarchy.AnarchyPlugin
+version: 0.0.1
+description: Anarchy plugin base for GGG Anarchy Server
