@@ -2,3 +2,10 @@ name: GGG-Anarchy
 main: ml.gggrealms.gggmcanarchy.AnarchyPlugin
 version: 0.0.1
 description: Anarchy plugin base for GGG Anarchy Server
+api-version: 1.19
+commands:
+  -gggmcanarchy:
+    aliases: gggmca
+    usage: /gggmcanarchy
+    permission: none
+    permission-message: "You lack sufficient permissions for such a command execution, dude."
