@@ -6,7 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-public class SaveNQuit implements CommandExecutor {
+public class SaveQuit implements CommandExecutor {
 
     // This method is called, when somebody uses our command
     @Override
