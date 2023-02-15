@@ -21,6 +21,9 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getServer().getConsoleSender().sendMessage("Activating plugin");
 
+        
+        this.getCommand("savequit").setExecutor(new SaveQuit());
+        
         Bukkit.getServer().getConsoleSender().sendMessage("----- GGG MC Anarchy Plugin -----");
         Bukkit.getServer().getConsoleSender().sendMessage("Plugin now activated, version 0.0.1");
         Bukkit.getServer().getConsoleSender().sendMessage("Plugin Preliminary stage, all players are in creative build mode.");
