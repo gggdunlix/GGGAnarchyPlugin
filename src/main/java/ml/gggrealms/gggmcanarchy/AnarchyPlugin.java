@@ -38,11 +38,22 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         Bukkit.getServer().setSpawnRadius(0);
 
 
+        // get if the player saved before quitting
         Boolean isDataSaved = false;
 
         if (isDataSaved) {
+            joinedP.sendMessage(Component.text("Data loaded, welcome back!"))
 
         } else {
+            //make them rechoose class
+            //clear their inv:
+            PlayerInventory pli1= joinedP.getInventory();
+            pli1.clear();
+            
+            pli1.setHelmet(new ItemStack(Material.AIR));
+            pli1.setChestplate(new ItemStack(Material.AIR));
+            pli1.setLeggings(new ItemStack(Material.AIR));
+            pli1.setBoots(new ItemStack(Material.AIR));
             joinedP.sendMessage(Component.text("No data saved, did you not use /savequit?", TextColor.color(HSVLike.fromRGB(255, 35, 10))));
         }
 
