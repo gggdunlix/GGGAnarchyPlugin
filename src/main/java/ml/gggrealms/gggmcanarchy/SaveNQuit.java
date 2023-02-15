@@ -31,7 +31,8 @@ public class SaveNQuit implements CommandExecutor {
             sender.sendMessage("Stand Still for 20 seconds to disconnect!")
             Thread.sleep(20);
             if (player.getLocation() == playerLoc) {
-                //disconnect the player!
+                player.kickPlayer("Data saved. See you later!")
+                //save the DB as saved for this player!
             } else {
                 sender.sendMessage("You moved! Try again!");
             }
