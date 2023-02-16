@@ -30,6 +30,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getServer().getConsoleSender().sendMessage("Activating plugin");
 
+        //Need to write code to create (if not already) scoreboard objectives that can track the wanted level, money amount, etc.
         
         this.getCommand("savequit").setExecutor(new SaveQuit());
         
@@ -79,12 +80,16 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
     }
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
+        Player deadPlayer = event.getPlayer();
+        //remove score for any wanted level
+        
 
     }
     
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        
+        Player spawnedPlayer = event.getPlayer();
+        spawnedPlayer.addScoreboardTag("isPlayerInHub");
     }
 
 }
