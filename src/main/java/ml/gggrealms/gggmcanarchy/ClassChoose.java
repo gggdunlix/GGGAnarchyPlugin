@@ -13,8 +13,25 @@ public class ClassChoose implements CommandExecutor {
     // This method is called, when somebody uses our command
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        
         Boolean isPlayerInHub = false;
+        Set<String> tags = joinedP.getScoreboardTags();
+        //Determine if the player is in the hub
+        if (tag.contains("isPlayerInHub") {
+            isPlayerInHub = true;
+        }
         Boolean doesPlayerOwnSmallApt = false;
+        if (tag.contains("doesPlayerOwnSmallApt") {
+            doesPlayerOwnSmallApt = true;
+        }
+        Boolean doesPlayerOwnMediumApt = false;
+        if (tag.contains("doesPlayerOwnMediumApt") {
+            doesPlayerOwnMediumApt = true;
+        }
+        Boolean doesPlayerOwnHighApt = false;
+        if (tag.contains("doesPlayerOwnHighApt") {
+            doesPlayerOwnHighApt = true;
+        }
         Player player = (Player) sender;
 
         if (isPlayerInHub) {
@@ -23,6 +40,8 @@ public class ClassChoose implements CommandExecutor {
                 player.sendMessage("\"default\": Spawns with no items at a random location.");
                 player.sendMessage("^^^ Here are a list of classes that are available. Some require properties and/or come with other special perks. ^^^");
             }
+        } else {
+            sender.sendMessage("You need to be in the hub when running this command. You can't rechoose class while alive.")
         }
 
         
