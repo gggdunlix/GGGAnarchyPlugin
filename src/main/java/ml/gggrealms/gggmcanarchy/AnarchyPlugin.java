@@ -5,14 +5,22 @@ import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.util.HSVLike;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.Material;
 import org.bukkit.Server;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.w3c.dom.css.RGBColor;
+
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.Set;
 
 public class AnarchyPlugin extends JavaPlugin implements Listener {
 
@@ -40,25 +48,36 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         joinedP.setGameMode(GameMode.CREATIVE);
         Bukkit.getServer().setSpawnRadius(0);
 
-
-        // get if the player saved before quitting
         Boolean isDataSaved = false;
+        // get if the player saved before quitting
+        Set<String> tags = joinedP.getScoreboardTags();
+        if (tags.contains("saved")) {
+            isDataSaved = true;
+        } else {
+            isDataSaved = false;
+        }
 
         if (isDataSaved) {
-            joinedP.sendMessage(Component.text("Data loaded, welcome back!"))
+            joinedP.sendMessage(Component.text("Data loaded, welcome back!"));
+            joinedP.removeScoreboardTag("saved");
 
         } else {
-            //make them rechoose class
+            //make them rechoose class,
+            // TP THem to the hub
             //clear their inv:
             PlayerInventory pli1= joinedP.getInventory();
             pli1.clear();
-            
+            joinedP.removeScoreboardTag("saved");
             pli1.setHelmet(new ItemStack(Material.AIR));
             pli1.setChestplate(new ItemStack(Material.AIR));
             pli1.setLeggings(new ItemStack(Material.AIR));
             pli1.setBoots(new ItemStack(Material.AIR));
             joinedP.sendMessage(Component.text("No data saved, did you not use /savequit?", TextColor.color(HSVLike.fromRGB(255, 35, 10))));
         }
+
+    }
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent event) {
 
     }
 

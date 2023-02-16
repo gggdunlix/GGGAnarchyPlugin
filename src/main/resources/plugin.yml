@@ -1,11 +1,23 @@
 name: GGG-Anarchy
 main: ml.gggrealms.gggmcanarchy.AnarchyPlugin
 version: 0.0.1
-description: Anarchy plugin base for GGG Anarchy Server
+description: "Anarchy plugin base for GGG Anarchy Server"
 api-version: 1.19
+author: "GGGDunlix"
 commands:
-  -gggmcanarchy:
+  gggmcanarchy:
     aliases: gggmca
-    usage: /gggmcanarchy
+    usage: "/gggmcanarchy"
+    permission: none
+    permission-message: "You lack sufficient permissions for such a command execution, dude."
+  savequit:
+    description: "Saves your progress and leaves the server"
+    aliases: quit
+    usage: "/savequit"
+    permission: none
+    permission-message: "You lack sufficient permissions for such a command execution, dude."
+  class:
+    description: "allows you to spawn as a class. Only unlocked classes can be used. Certain properties need to be owned in order to unlock classes."
+    usage: "/class <class>"
     permission: none
     permission-message: "You lack sufficient permissions for such a command execution, dude."
