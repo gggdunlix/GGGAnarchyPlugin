@@ -49,6 +49,7 @@ public class ClassChoose implements CommandExecutor {
         if (isPlayerInHub) {
             if (args.length == 0) {
                 player.sendMessage(Component.text("Class List: ", TextColor.color(148, 144, 150)).append(Component.text("use /class <class-name> to spawn in.", TextColor.color(107, 175, 255))));
+                player.sendMessage(Component.text("farmer: ", TextColor.color(255,255,12)).append(Component.text("Spawns with a farming tool at a farm.", TextColor.color(255,255,255))));
                 player.sendMessage(Component.text("rider: ", TextColor.color(255,255,12)).append(Component.text("Spawns with no items and a slow horse at a random location.", TextColor.color(255,255,255))));
                 player.sendMessage(Component.text("default: ", TextColor.color(255,255,12)).append(Component.text("Spawns with no items at a random location.", TextColor.color(255,255,255))));
                 player.sendMessage("^^^ Here are a list of classes that are available. Some require properties and/or come with other special perks. ^^^");
@@ -85,6 +86,19 @@ public class ClassChoose implements CommandExecutor {
 
 
 
+            } else if (args[0].equals("farmer")) {
+                player.sendMessage(Component.text("You spawned as ").append(Component.text("farmer", TextColor.color(13, 25, 200))));
+                ArrayList<Location> locations = new ArrayList<Location>();
+                locations.add(new Location(player.getWorld(), 000, 000, -000));
+                locations.add(new Location(player.getWorld(), 000, 000, -000));
+                locations.add(new Location(player.getWorld(), 000, 000, -000));
+                locations.add(new Location(player.getWorld(), 000, 000, -000));
+                int random_int = (int)Math.floor(Math.random() * ((locations.size() - 1)  - 0 + 1) + 0);
+                
+                player.teleport(chosenLoc);
+                player.removeScoreboardTag("isPlayerInHub");
+                
+                player.getInventory.setIndex(0, new ItemStack(Material.WOODEN_HOE));
             } else return false;
         } else {
             sender.sendMessage("You need to be in the hub when running this command. You can't choose class while alive.");
