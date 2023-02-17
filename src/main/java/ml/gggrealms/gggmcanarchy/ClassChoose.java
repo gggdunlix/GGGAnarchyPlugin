@@ -94,11 +94,25 @@ public class ClassChoose implements CommandExecutor {
                 locations.add(new Location(player.getWorld(), 000, 000, -000));
                 locations.add(new Location(player.getWorld(), 000, 000, -000));
                 int random_int = (int)Math.floor(Math.random() * ((locations.size() - 1)  - 0 + 1) + 0);
-                
+                Location chosenLoc = locations.get(random_int);
                 player.teleport(chosenLoc);
                 player.removeScoreboardTag("isPlayerInHub");
                 
-                player.getInventory.setIndex(0, new ItemStack(Material.WOODEN_HOE));
+                player.getInventory().addItem(new ItemStack(Material.WOODEN_HOE));
+                
+                ArrayList<ItemStack> seeds = new ArrayList<ItemStack>() {
+                    ItemStack(Material.WHEAT_SEEDS),
+                    ItemStack(Material.MELON_SEEDS),
+                    ItemStack(Material.PUMPKIN_SEEDS),
+                    ItemStack(Material.CARROT),
+                    ItemStack(Material.BEETROOT_SEEDS),
+                    ItemStack(Material.POTATOE),
+
+                };
+                int random_int2 = (int)Math.floor(Math.random() * ((seeds.size() - 1)  - 0 + 1) + 0);
+                ItemStack chosenSeed = seeds.get(random_int2);
+                player.getInventory().addItem(seeds);
+                
             } else return false;
         } else {
             sender.sendMessage("You need to be in the hub when running this command. You can't choose class while alive.");
