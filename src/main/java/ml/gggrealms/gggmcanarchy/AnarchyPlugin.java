@@ -3,11 +3,13 @@ package ml.gggrealms.gggmcanarchy;
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.title.Title;
 import net.kyori.adventure.util.HSVLike;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,9 +27,11 @@ import org.jetbrains.annotations.Nullable;
 import org.spigotmc.event.player.PlayerSpawnLocationEvent;
 import org.w3c.dom.css.RGBColor;
 
+import javax.security.auth.login.Configuration;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.UUID;
 
 public class AnarchyPlugin extends JavaPlugin implements Listener {
 
@@ -36,11 +40,10 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getServer().getConsoleSender().sendMessage("----- GGG MC Anarchy Plugin -----");
         Bukkit.getServer().getConsoleSender().sendMessage("Activating plugin");
+        saveDefaultConfig();
 
-        //Need to write code to create (if not already) scoreboard objectives that can track the wanted level, money amount, etc.
-        ScoreboardManager manager = Bukkit.getScoreboardManager();
-        Scoreboard scoreboard = manager.getNewScoreboard();
-        Objective money = scoreboard.registerNewObjective("money", Criteria.DUMMY, "$");
+
+
 
         this.getCommand("savequit").setExecutor(new SaveQuit());
         this.getCommand("class").setExecutor(new ClassChoose());
@@ -62,6 +65,18 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         joinedP.sendMessage(Component.text("Right now, we're gonna set you to creative and ask that you start building a city with buildings that would have a function, like stores, offices, houses, whatever you feel should fit. Eventually, the server will be playable and very fun.\nThanks, GGGDunlix & GGGCarl."));
         joinedP.setGameMode(GameMode.CREATIVE);
         Bukkit.getServer().setSpawnRadius(0);
+        FileConfiguration config = getConfig();
+        UUID pUUID = joinedP.identity().uuid();
+        if (config.getString("players." + pUUID) == null) {
+            config.set("players." + pUUID + ".prevName", joinedP.name());
+            config.set("players." + pUUID + ".money", 0);
+            config.set("players." + pUUID + ".smallApt1Safe", 0);
+            config.set("players." + pUUID + ".medApt1Safe", 0);
+            config.set("players." + pUUID + ".highApt1Safe", 0);
+            config.set("players." + pUUID + ".bankSafe", 0);
+        }
+        config.set("players." + pUUID + ".prevName", joinedP.name());
+
 
         Boolean isDataSaved = false;
         // get if the player saved before quitting
@@ -82,6 +97,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
             joinedP.teleport(new Location(joinedP.getWorld(), 817, -13, -1030));
             // TP THem to the hub
             //clear their inv:
+            config.set("players." + pUUID + ".money", 0);
             PlayerInventory pli1= joinedP.getInventory();
             pli1.clear();
             joinedP.removeScoreboardTag("saved");
@@ -91,22 +107,24 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
             pli1.setLeggings(new ItemStack(Material.AIR));
             pli1.setBoots(new ItemStack(Material.AIR));
             joinedP.sendMessage(Component.text("No data saved, did you not use /savequit?", TextColor.color(HSVLike.fromRGB(255, 35, 10))));
+            joinedP.removeScoreboardTag("classFarmer");
+            joinedP.removeScoreboardTag("classDefault");
+            joinedP.removeScoreboardTag("classRider");
+
+            saveConfig();
         }
 
-        ScoreboardManager manager = Bukkit.getScoreboardManager();
-        Scoreboard scoreboard = manager.getNewScoreboard();
-        Objective money = scoreboard.registerNewObjective("money", Criteria.DUMMY, "$");
-
-        Score score = money.getScore(joinedP);
-        score.setScore(score.getScore() + 0);
-        money.setDisplaySlot(DisplaySlot.SIDEBAR);
 
     }
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player deadPlayer = event.getPlayer();
         //remove score for any wanted level
-        
+        deadPlayer.removeScoreboardTag("classFarmer");
+        deadPlayer.removeScoreboardTag("classDefault");
+        deadPlayer.removeScoreboardTag("classRider");
+        getConfig().set("players." + deadPlayer.identity().uuid() + ".money", 0);
+        saveConfig();
 
     }
     
@@ -120,6 +138,19 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         spawnedPlayer.teleport(new Location(spawnedPlayer.getWorld(), 817, -13, -1030));
         spawnedPlayer.addScoreboardTag("isPlayerInHub");
 
+
+
+    }
+
+    public void editDataConfig(String datapath, Object value) {
+        FileConfiguration config = getConfig();
+        config.set(datapath, value);
+        saveConfig();
+
+    }
+    public String getDataConfig(String datapath) {
+        FileConfiguration config = getConfig();
+        return config.getString(datapath);
 
     }
 

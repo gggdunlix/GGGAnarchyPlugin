@@ -8,17 +8,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.*;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 public class ClassChoose implements CommandExecutor {
 
@@ -45,11 +38,20 @@ public class ClassChoose implements CommandExecutor {
         if (tags.contains("doesPlayerOwnHighApt")) {
             doesPlayerOwnHighApt = true;
         }
+        Boolean doesPlayerOwnFarm = false;
+        if (tags.contains("doesPlayerOwnFarm")) {
+            doesPlayerOwnFarm = true;
+        }
 
         if (isPlayerInHub) {
             if (args.length == 0) {
                 player.sendMessage(Component.text("Class List: ", TextColor.color(148, 144, 150)).append(Component.text("use /class <class-name> to spawn in.", TextColor.color(107, 175, 255))));
-                player.sendMessage(Component.text("farmer: ", TextColor.color(255,255,12)).append(Component.text("Spawns with a farming tool at a farm.", TextColor.color(255,255,255))));
+                if (doesPlayerOwnFarm) {
+                    player.sendMessage(Component.text("horseman: ", TextColor.color(255,255,12)).append(Component.text("Spawns with a horse at a farm.", TextColor.color(255,255,255))));
+                } else {
+                    player.sendMessage(Component.text("horseman: ", TextColor.color(255,255,12)).append(Component.text("Spawns with a horse at a farm. - REQUIRES PROPERTY: Farm", TextColor.color(210, 11, 37))));
+                }
+                player.sendMessage(Component.text("farmer: ", TextColor.color(255,255,12)).append(Component.text("Spawns with a farming tool near a farm.", TextColor.color(255,255,255))));
                 player.sendMessage(Component.text("rider: ", TextColor.color(255,255,12)).append(Component.text("Spawns with no items and a slow horse at a random location.", TextColor.color(255,255,255))));
                 player.sendMessage(Component.text("default: ", TextColor.color(255,255,12)).append(Component.text("Spawns with no items at a random location.", TextColor.color(255,255,255))));
                 player.sendMessage("^^^ Here are a list of classes that are available. Some require properties and/or come with other special perks. ^^^");
@@ -63,6 +65,7 @@ public class ClassChoose implements CommandExecutor {
                 int random_int = (int)Math.floor(Math.random() * ((locations.size() - 1)  - 0 + 1) + 0);
                 player.teleport(locations.get(random_int));
                 player.removeScoreboardTag("isPlayerInHub");
+                player.addScoreboardTag("classDefault");
 
             } else if (args[0].equals("rider")) {
                 player.sendMessage(Component.text("You spawned as ").append(Component.text("rider", TextColor.color(13, 25, 200))));
@@ -75,14 +78,15 @@ public class ClassChoose implements CommandExecutor {
                 Location chosenLoc = locations.get(random_int);
                 player.teleport(chosenLoc);
                 player.removeScoreboardTag("isPlayerInHub");
+                player.addScoreboardTag("riderClass");
 
-                Donkey horse = (Donkey) Bukkit.getWorld("world").spawnEntity(player.getLocation(), EntityType.DONKEY);
-                horse.setTamed(true);
-                horse.getInventory().setSaddle(new ItemStack(Material.SADDLE));
+                Donkey donkey = (Donkey) Bukkit.getWorld("world").spawnEntity(player.getLocation(), EntityType.DONKEY);
+                donkey.setTamed(true);
+                donkey.getInventory().setSaddle(new ItemStack(Material.SADDLE));
 
-                horse.damage(6);
+                donkey.damage(20);
 
-                horse.addPassenger(player);
+                donkey.addPassenger(player);
 
 
 
@@ -99,20 +103,45 @@ public class ClassChoose implements CommandExecutor {
                 player.removeScoreboardTag("isPlayerInHub");
                 
                 player.getInventory().addItem(new ItemStack(Material.WOODEN_HOE));
-                
-                ArrayList<ItemStack> seeds = new ArrayList<ItemStack>() {
-                    ItemStack(Material.WHEAT_SEEDS),
-                    ItemStack(Material.MELON_SEEDS),
-                    ItemStack(Material.PUMPKIN_SEEDS),
-                    ItemStack(Material.CARROT),
-                    ItemStack(Material.BEETROOT_SEEDS),
-                    ItemStack(Material.POTATOE),
 
+                int random_int2 = (int)Math.floor(Math.random() * ((6 - 1)  - 0 + 1) + 0);
+                if (random_int2 == 0) {
+                    player.getInventory().addItem(new ItemStack(Material.WHEAT_SEEDS));
+                } else if (random_int2 == 1) {
+                    player.getInventory().addItem(new ItemStack(Material.BEETROOT_SEEDS));
+                } else if (random_int2 == 2) {
+                    player.getInventory().addItem(new ItemStack(Material.MELON_SEEDS));
+                } else if (random_int2 == 3) {
+                    player.getInventory().addItem(new ItemStack(Material.PUMPKIN_SEEDS));
+                } else if (random_int2 == 4) {
+                    player.getInventory().addItem(new ItemStack(Material.WHEAT_SEEDS));
+                } else if (random_int2 == 5) {
+                    player.getInventory().addItem(new ItemStack(Material.CARROT));
+                } else if (random_int2 == 6) {
+                    player.getInventory().addItem(new ItemStack(Material.POTATO));
                 };
-                int random_int2 = (int)Math.floor(Math.random() * ((seeds.size() - 1)  - 0 + 1) + 0);
-                ItemStack chosenSeed = seeds.get(random_int2);
-                player.getInventory().addItem(seeds);
+                player.addScoreboardTag("classFarmer");
                 
+            } else if (args[0].equals("horseman")) {
+                if (doesPlayerOwnFarm) {
+                    player.sendMessage(Component.text("You spawned as ").append(Component.text("horseman", TextColor.color(13, 25, 200))));
+                    ArrayList<Location> locations = new ArrayList<Location>();
+                    locations.add(new Location(player.getWorld(), 000, 000, -000));
+                    locations.add(new Location(player.getWorld(), 000, 000, -000));
+                    int random_int = (int) Math.floor(Math.random() * ((locations.size() - 1) - 0 + 1) + 0);
+                    Location chosenLoc = locations.get(random_int);
+                    player.teleport(chosenLoc);
+                    player.removeScoreboardTag("isPlayerInHub");
+                    Horse horse = (Horse) Bukkit.getWorld("world").spawnEntity(player.getLocation(), EntityType.HORSE);
+                    horse.setTamed(true);
+                    horse.getInventory().setSaddle(new ItemStack(Material.SADDLE));
+                    horse.addPassenger(player);
+
+                    player.addScoreboardTag("classHorseman");
+                } else {
+                    player.sendMessage(Component.text("You need to own 'farm' to spawn as ", TextColor.color(210, 11, 37)).append(Component.text("horseman", TextColor.color(13, 25, 200))));
+                }
+
             } else return false;
         } else {
             sender.sendMessage("You need to be in the hub when running this command. You can't choose class while alive.");
