@@ -1,51 +1,56 @@
 package ml.gggrealms.gggmcanarchy;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
+import com.sun.tools.javac.Main;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.title.Title;
 import net.kyori.adventure.util.HSVLike;
 import org.bukkit.*;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Entity;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.*;
+import org.bukkit.scheduler.BukkitScheduler;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.spigotmc.event.player.PlayerSpawnLocationEvent;
-import org.w3c.dom.css.RGBColor;
 
-import javax.security.auth.login.Configuration;
-import java.sql.Array;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
 
+
 public class AnarchyPlugin extends JavaPlugin implements Listener {
 
+    public static AnarchyPlugin plugin;
+
+    public void saveConfigFile() {
+        this.saveConfig();
+    }
+    public FileConfiguration getConfigFile() {
+        return this.getConfig();
+    }
     @Override
     public void onEnable() {
+
+        plugin = this;
         Bukkit.getPluginManager().registerEvents(this, this);
         Bukkit.getServer().getConsoleSender().sendMessage("----- GGG MC Anarchy Plugin -----");
         Bukkit.getServer().getConsoleSender().sendMessage("Activating plugin");
+
         saveDefaultConfig();
 
 
 
-
         this.getCommand("savequit").setExecutor(new SaveQuit());
+        this.getCommand("enter").setExecutor(new EnterCommand());
         this.getCommand("class").setExecutor(new ClassChoose());
         this.getCommand("class").setTabCompleter(new classOnTabCompleteClass());
 
@@ -65,17 +70,20 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         joinedP.sendMessage(Component.text("Right now, we're gonna set you to creative and ask that you start building a city with buildings that would have a function, like stores, offices, houses, whatever you feel should fit. Eventually, the server will be playable and very fun.\nThanks, GGGDunlix & GGGCarl."));
         joinedP.setGameMode(GameMode.CREATIVE);
         Bukkit.getServer().setSpawnRadius(0);
-        FileConfiguration config = getConfig();
-        UUID pUUID = joinedP.identity().uuid();
-        if (config.getString("players." + pUUID) == null) {
-            config.set("players." + pUUID + ".prevName", joinedP.name());
-            config.set("players." + pUUID + ".money", 0);
-            config.set("players." + pUUID + ".smallApt1Safe", 0);
-            config.set("players." + pUUID + ".medApt1Safe", 0);
-            config.set("players." + pUUID + ".highApt1Safe", 0);
-            config.set("players." + pUUID + ".bankSafe", 0);
+
+        FileConfiguration customConfig = getConfigFile();
+
+        String pUUID = joinedP.identity().uuid().toString();
+        if (customConfig.getString("players." + pUUID) == null) {
+            customConfig.set("players." + pUUID + ".prevName", joinedP.getName());
+            customConfig.set("players." + pUUID + ".money", 0);
+            customConfig.set("players." + pUUID + ".smallApt1Safe", 0);
+            customConfig.set("players." + pUUID + ".medApt1Safe", 0);
+            customConfig.set("players." + pUUID + ".highApt1Safe", 0);
+            customConfig.set("players." + pUUID + ".bankSafe", 0);
+            customConfig.set("players." + pUUID + ".riderCooldown", 0);
         }
-        config.set("players." + pUUID + ".prevName", joinedP.name());
+        customConfig.set("players." + pUUID+ ".prevName", joinedP.getName());
 
 
         Boolean isDataSaved = false;
@@ -92,12 +100,8 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
             joinedP.removeScoreboardTag("saved");
 
         } else {
-            joinedP.performCommand("class");
-            //make them rechoose class,
             joinedP.teleport(new Location(joinedP.getWorld(), 817, -13, -1030));
-            // TP THem to the hub
-            //clear their inv:
-            config.set("players." + pUUID + ".money", 0);
+            customConfig.set("players." + pUUID + ".money", 0);
             PlayerInventory pli1= joinedP.getInventory();
             pli1.clear();
             joinedP.removeScoreboardTag("saved");
@@ -110,11 +114,23 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
             joinedP.removeScoreboardTag("classFarmer");
             joinedP.removeScoreboardTag("classDefault");
             joinedP.removeScoreboardTag("classRider");
-
-            saveConfig();
         }
 
-
+        joinedP.performCommand("class");
+    }
+    public void startRiderCountdown(Player player) {
+        FileConfiguration customConfig = getConfigFile();
+        UUID pUUID = player.identity().uuid();
+        BukkitScheduler scheduler = getServer().getScheduler();
+        scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
+            @Override
+            public void run() {
+                if (customConfig.getInt("player." + pUUID + ".riderCooldown") > 0) {
+                    customConfig.set("player." + pUUID + ".riderCooldown", customConfig.getInt("player." + pUUID + ".riderCooldown") - 1);
+                }
+                saveConfig();
+            }
+        }, 20, 20);
     }
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
@@ -123,25 +139,16 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         deadPlayer.removeScoreboardTag("classFarmer");
         deadPlayer.removeScoreboardTag("classDefault");
         deadPlayer.removeScoreboardTag("classRider");
-        getConfig().set("players." + deadPlayer.identity().uuid() + ".money", 0);
+        editDataConfig("players."+ deadPlayer.identity().uuid() + ".money", 0);
         saveConfig();
-
     }
     
     @EventHandler
     public void onPlayerPostRespawn(PlayerPostRespawnEvent event) {
-
-
-
-
         Player spawnedPlayer = event.getPlayer();
         spawnedPlayer.teleport(new Location(spawnedPlayer.getWorld(), 817, -13, -1030));
         spawnedPlayer.addScoreboardTag("isPlayerInHub");
-
-
-
     }
-
     public void editDataConfig(String datapath, Object value) {
         FileConfiguration config = getConfig();
         config.set(datapath, value);
@@ -153,5 +160,6 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         return config.getString(datapath);
 
     }
+
 
 }

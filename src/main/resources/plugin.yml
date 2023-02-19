@@ -8,16 +8,20 @@ commands:
   gggmcanarchy:
     aliases: gggmca
     usage: "/gggmcanarchy"
-    permission: none
-    permission-message: "You lack sufficient permissions for such a command execution, dude."
   savequit:
     description: "Saves your progress and leaves the server"
     aliases: quit
     usage: "/savequit"
-    permission: none
-    permission-message: "You lack sufficient permissions for such a command execution, dude."
   class:
     description: "allows you to spawn as a class. Only unlocked classes can be used. Certain properties need to be owned in order to unlock classes."
     usage: "/class <class>"
-    permission: none
+  editconfig:
+    description: "edits the server config file"
+    usage: "/editconfig <String path> <Object value>"
+    permission: op
     permission-message: "You lack sufficient permissions for such a command execution, dude."
+  enter:
+    aliases: ["exit"]
+    description: "Allows you to enter/exit spaces while standing on that prompt's respective stone blocks. Usually, a sign will be where you are supposed to use this command."
+    usage: "/enter"
+
