@@ -11,7 +11,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.*;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.io.File;
@@ -36,6 +38,10 @@ public class ClassChoose implements CommandExecutor {
         if (tags.contains("isPlayerInHub")) {
             isPlayerInHub = true;
         }
+        Boolean doesPlayerOwnCheapApt = false;
+        if (tags.contains("doesPlayerOwnCheapApt")) {
+            doesPlayerOwnCheapApt = true;
+        }
         Boolean doesPlayerOwnSmallApt = false;
         if (tags.contains("doesPlayerOwnSmallApt")) {
             doesPlayerOwnSmallApt = true;
@@ -55,7 +61,7 @@ public class ClassChoose implements CommandExecutor {
 
         if (isPlayerInHub) {
             if (args.length == 0) {
-                player.sendMessage(Component.text("Class List: ", TextColor.color(148, 144, 150)).append(Component.text("use /class <class-name> to spawn in.", TextColor.color(107, 175, 255))));
+                player.sendMessage(Component.text("Class List: ", TextColor.color(148, 144, 150)).append(Component.text("use /c <class-name> to spawn in.", TextColor.color(107, 175, 255))));
                 if (doesPlayerOwnFarm) {
                     player.sendMessage(Component.text("horseman: ", TextColor.color(255,255,12)).append(Component.text("Spawns with a horse at a farm.", TextColor.color(255,255,255))));
                 } else {
@@ -72,13 +78,19 @@ public class ClassChoose implements CommandExecutor {
                 locations.add(new Location(player.getWorld(), 781, 63, -1036));
                 locations.add(new Location(player.getWorld(), 855, 66, -972));
                 locations.add(new Location(player.getWorld(), 809, 64, -990));
+                locations.add(new Location(player.getWorld(), 960, 66, -930));
+                locations.add(new Location(player.getWorld(), 920, 70, -900));
+                locations.add(new Location(player.getWorld(), 780, 69, -915));
+                locations.add(new Location(player.getWorld(), 696, 70, -833));
+                locations.add(new Location(player.getWorld(), 652, 70, -924));
+
                 int random_int = (int)Math.floor(Math.random() * ((locations.size() - 1)  - 0 + 1) + 0);
                 player.teleport(locations.get(random_int));
                 player.removeScoreboardTag("isPlayerInHub");
                 player.addScoreboardTag("classDefault");
 
             } else if (args[0].equals("rider")) {
-                if (config.getInt("players." + pUUID + ".riderCooldown") == 0) {
+                if (config.getInt("players." + pUUID + ".riderCooldown") <= 0) {
                     player.sendMessage(Component.text("You spawned as ").append(Component.text("rider", TextColor.color(13, 25, 200))));
                     player.sendMessage(Component.text("You must wait ").append(Component.text("240 seconds", TextColor.color(255, 230, 87))).append(Component.text(" before spawning as this class again.", TextColor.color(255, 255, 255))));
                     config.set("players." + pUUID + ".riderCooldown", 240);
@@ -100,7 +112,8 @@ public class ClassChoose implements CommandExecutor {
 
                     donkey.damage(20);
                     player.sendMessage(Component.text("This donkey will die in a few minutes!", TextColor.color(210, 11, 37)));
-
+                    donkey.setHealth(donkey.getHealth()/3);
+                    donkey.addPassenger(player);
                     new BukkitRunnable() {
 
                         @Override
@@ -108,54 +121,26 @@ public class ClassChoose implements CommandExecutor {
                             donkey.setHealth(0);
                         }
                     }.runTaskLater(Bukkit.getPluginManager().getPlugin("GGG-Anarchy"), 20*180);
-                    donkey.addPassenger(player);
-                    BukkitRunnable riderTimer = (BukkitRunnable) new BukkitRunnable() {
-
-                        @Override
-                        public void run() {
-                            if (config.getInt("player." + pUUID + ".riderCooldown") > 0) {
-                                config.set("player." + pUUID + ".riderCooldown", config.getInt("player." + pUUID + ".riderCooldown") - 1);
-                                AnarchyPlugin.plugin.saveConfigFile();
-                            }
-                        }
-                    }.runTaskTimer(AnarchyPlugin.plugin, 20, 20);
-                    donkey.addPassenger(player);
                 } else {
                     player.sendMessage(Component.text("You must wait ").append(Component.text(config.getInt("players." + pUUID + ".riderCooldown") + " seconds", TextColor.color(255, 230, 87))).append(Component.text(" before spawning as this class again.", TextColor.color(255, 255, 255))));
                 }
 
 
             } else if (args[0].equals("farmer")) {
-                player.sendMessage(Component.text("You spawned as ").append(Component.text("farmer", TextColor.color(13, 25, 200))));
-                ArrayList<Location> locations = new ArrayList<Location>();
-                locations.add(new Location(player.getWorld(), 918, 64, -961));
-                locations.add(new Location(player.getWorld(), 877, 64, -906));
-                locations.add(new Location(player.getWorld(), 858, 67, -955));
-                locations.add(new Location(player.getWorld(), 891, 72, -866));
-                int random_int = (int)Math.floor(Math.random() * ((locations.size() - 1)  - 0 + 1) + 0);
-                Location chosenLoc = locations.get(random_int);
-                player.teleport(chosenLoc);
-                player.removeScoreboardTag("isPlayerInHub");
-                
-                player.getInventory().addItem(new ItemStack(Material.WOODEN_HOE));
-
-                int random_int2 = (int)Math.floor(Math.random() * ((6 - 1)  - 0 + 1) + 0);
-                if (random_int2 == 0) {
-                    player.getInventory().addItem(new ItemStack(Material.WHEAT_SEEDS));
-                } else if (random_int2 == 1) {
-                    player.getInventory().addItem(new ItemStack(Material.BEETROOT_SEEDS));
-                } else if (random_int2 == 2) {
-                    player.getInventory().addItem(new ItemStack(Material.MELON_SEEDS));
-                } else if (random_int2 == 3) {
-                    player.getInventory().addItem(new ItemStack(Material.PUMPKIN_SEEDS));
-                } else if (random_int2 == 4) {
-                    player.getInventory().addItem(new ItemStack(Material.WHEAT_SEEDS));
-                } else if (random_int2 == 5) {
-                    player.getInventory().addItem(new ItemStack(Material.CARROT));
-                } else if (random_int2 == 6) {
-                    player.getInventory().addItem(new ItemStack(Material.POTATO));
-                };
-                player.addScoreboardTag("classFarmer");
+                if (config.getInt("players." + pUUID + ".farmerCooldown") <= 0) {
+                    player.sendMessage(Component.text("You spawned as ").append(Component.text("farmer", TextColor.color(13, 25, 200))));
+                    ArrayList<Location> locations = new ArrayList<Location>();
+                    locations.add(new Location(player.getWorld(), 1041, 63, -670));
+                    int random_int = (int) Math.floor(Math.random() * ((locations.size() - 1) - 0 + 1) + 0);
+                    Location chosenLoc = locations.get(random_int);
+                    player.teleport(chosenLoc);
+                    player.performCommand("join");
+                    player.removeScoreboardTag("isPlayerInHub");
+                    config.set("players." + pUUID + ".farmerCooldown", 600);
+                    player.addScoreboardTag("classFarmer");
+                } else {
+                    player.sendMessage(Component.text("You must wait ").append(Component.text(config.getInt("players." + pUUID + ".farmerCooldown") + " seconds", TextColor.color(255, 230, 87))).append(Component.text(" before spawning as this class again.", TextColor.color(255, 255, 255))));
+                }
                 
             } else if (args[0].equals("horseman")) {
                 if (doesPlayerOwnFarm) {
@@ -177,7 +162,23 @@ public class ClassChoose implements CommandExecutor {
                     player.sendMessage(Component.text("You need to own 'farm' to spawn as ", TextColor.color(210, 11, 37)).append(Component.text("horseman", TextColor.color(13, 25, 200))));
                 }
 
-            } else return false;
+            } else if (args[0].equals("dev")) {
+                if (player.isOp()) {
+                    player.sendMessage(Component.text("You spawned as ").append(Component.text("Developer", TextColor.color(200, 125, 55))));
+                    PlayerInventory i = player.getInventory();
+                    player.teleport(new Location(player.getWorld(), 861,154,-861));
+                    i.addItem(new ItemStack(Material.WOODEN_AXE));
+                    ItemStack rockets = new ItemStack(Material.FIREWORK_ROCKET);
+                    rockets.setAmount(64);
+                    i.addItem(rockets);
+                    i.setChestplate(new ItemStack(Material.ELYTRA));
+                    player.setGameMode(GameMode.CREATIVE);
+                    player.removeScoreboardTag("isPlayerInHub");
+                    player.addScoreboardTag("classDev");
+                } else {
+                    player.sendMessage("no");
+                }
+            }else return false;
         } else {
             sender.sendMessage("You need to be in the hub when running this command. You can't choose class while alive.");
         }
