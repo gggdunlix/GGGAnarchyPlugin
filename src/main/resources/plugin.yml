@@ -58,4 +58,6 @@ commands:
       - "breport"
   properties:
     description: "Shows info about properties around the world"
+  stash:
+    description: "Opens the weapons/items stash inside properties."
 
