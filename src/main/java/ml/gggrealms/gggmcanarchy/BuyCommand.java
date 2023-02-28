@@ -71,11 +71,11 @@ public class BuyCommand implements CommandExecutor {
                 //buy cheap apartment
                 FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
                 int money = cfg.getInt("players." + pU + ".money");
-                if (tags.contains("doesPlayerOwnCheapApartment")) {
+                if (!tags.contains("doesPlayerOwnCheapApt")) {
                     if (money >= 20000) {
                         money -= 20000;
                         cfg.set("players." + pU + ".money", money);
-                        p.addScoreboardTag("doesPlayerOwnCheapApartment");
+                        p.addScoreboardTag("doesPlayerOwnCheapApt");
                         p.performCommand("e");
                     } else {
                         p.sendMessage(Component.text("You do not have enough money. You need " + (20000 - money) + " more.", TextColor.color(210, 11, 37)));
@@ -90,7 +90,7 @@ public class BuyCommand implements CommandExecutor {
                 //US Bank Office apartment
                 FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
                 int money = cfg.getInt("players." + pU + ".money");
-                if (tags.contains("doesPlayerOwnUSBankOffice")) {
+                if (!tags.contains("doesPlayerOwnUSBankOffice")) {
                     if (money >= 300000) {
                         money -= 300000;
                         cfg.set("players." + pU + ".money", money);
@@ -110,7 +110,7 @@ public class BuyCommand implements CommandExecutor {
                 //Farm
                 FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
                 int money = cfg.getInt("players." + pU + ".money");
-                if (tags.contains("doesPlayerOwnFarm")) {
+                if (!tags.contains("doesPlayerOwnFarm")) {
                     if (money >= 150000) {
                         money -= 150000;
                         cfg.set("players." + pU + ".money", money);
@@ -130,7 +130,7 @@ public class BuyCommand implements CommandExecutor {
                 //Farm
                 FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
                 int money = cfg.getInt("players." + pU + ".money");
-                if (tags.contains("doesPlayerOwnBunker")) {
+                if (!tags.contains("doesPlayerOwnBunker")) {
                     if (money >= 1000000) {
                         money -= 1000000;
                         cfg.set("players." + pU + ".money", money);

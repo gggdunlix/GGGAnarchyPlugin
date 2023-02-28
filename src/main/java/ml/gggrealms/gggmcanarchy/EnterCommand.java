@@ -46,7 +46,7 @@ public class EnterCommand implements CommandExecutor {
             player.teleport(new Location(player.getWorld(), 923, 89, -932));
         } else if (locationIsInCuboid(pLoc, new Location(w, 924,92,-932), new Location(w, 922,88,-933))) {
             // US Bank mid > lobby
-            player.teleport(new Location(player.getWorld(), 923, 69, -932));
+            player.teleport(new Location(player.getWorld(), 924, 69, -929));
         } else if (locationIsInCuboid(pLoc, new Location(w, 921,200,-931), new Location(w, 920,198,-932))) {
             // US Bank roof > mid
             player.teleport(new Location(player.getWorld(), 923, 89, -926));

@@ -189,20 +189,23 @@ public class SafeCommand implements CommandExecutor {
                         player.sendMessage(Component.text("Withdraw a positive amount of money.", TextColor.color(210, 11, 37)));
                     }
                 } else if (args[0].equals("sell")) {
-                    if (args[1] == null) {
+                    if (args.length == 1) {
                         player.sendMessage(Component.text("Are you sure you want to sell this apartment? You won't get the items in the stash back. You will keep the the amount the apartment cost and what was in the safe. If you are sure, please type /safe sell yes", TextColor.color(210, 11, 37)));
-                    } else if (args[1].equals("yes")) {
-                        player.sendMessage(Component.text("Sold apartment.", TextColor.color(210, 11, 37)));
-                        player.removeScoreboardTag("doesPlayerOwnUSBankOffice");
-                        FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
-                        int money = cfg.getInt("players." + pUUID + ".money");
-                        int safeMoney = cfg.getInt("players." + pUUID + ".USBankOfficeBalance");
-                        cfg.set("players." + pUUID + ".USBankOfficeBalance", 0);
-                        money += 300000;
-                        money += safeMoney;
-                        cfg.set("players." + pUUID + ".money", money);
-                        AnarchyPlugin.plugin.saveConfigFile();
-
+                    } else if (args.length == 2) {
+                        if (args[1].equals("yes")) {
+                            player.sendMessage(Component.text("Sold apartment.", TextColor.color(210, 11, 37)));
+                            player.removeScoreboardTag("doesPlayerOwnUSBankOffice");
+                            FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
+                            int money = cfg.getInt("players." + pUUID + ".money");
+                            int safeMoney = cfg.getInt("players." + pUUID + ".USBankOfficeBalance");
+                            cfg.set("players." + pUUID + ".USBankOfficeBalance", 0);
+                            money += 300000;
+                            money += safeMoney;
+                            cfg.set("players." + pUUID + ".money", money);
+                            AnarchyPlugin.plugin.saveConfigFile();
+                        } else {
+                            player.sendMessage(Component.text("Wrong usage, try /safe maybe?", TextColor.color(210, 11, 37)));
+                        }
                     } else {
                         player.sendMessage(Component.text("Wrong usage, try /safe maybe?", TextColor.color(210, 11, 37)));
                     }
@@ -278,20 +281,23 @@ public class SafeCommand implements CommandExecutor {
                         player.sendMessage(Component.text("Withdraw a positive amount of money.", TextColor.color(210, 11, 37)));
                     }
                 } else if (args[0].equals("sell")) {
-                    if (args[1] == null) {
+                    if (args.length == 1) {
                         player.sendMessage(Component.text("Are you sure you want to sell this apartment? You won't get the items in the stash back. You will keep the the amount the apartment cost and what was in the safe. If you are sure, please type /safe sell yes", TextColor.color(210, 11, 37)));
-                    } else if (args[1].equals("yes")) {
-                        player.sendMessage(Component.text("Sold apartment.", TextColor.color(210, 11, 37)));
-                        player.removeScoreboardTag("doesPlayerOwnCheapApartment");
-                        FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
-                        int money = cfg.getInt("players." + pUUID + ".money");
-                        int safeMoney = cfg.getInt("players." + pUUID + ".CheapAptBalance");
-                        cfg.set("players." + pUUID + ".CheapAptBalance", 0);
-                        money += 20000;
-                        money += safeMoney;
-                        cfg.set("players." + pUUID + ".money", money);
-                        AnarchyPlugin.plugin.saveConfigFile();
-
+                    } else if (args.length == 2) {
+                        if (args[1].equals("yes")) {
+                            player.sendMessage(Component.text("Sold apartment.", TextColor.color(210, 11, 37)));
+                            player.removeScoreboardTag("doesPlayerOwnCheapApt");
+                            FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
+                            int money = cfg.getInt("players." + pUUID + ".money");
+                            int safeMoney = cfg.getInt("players." + pUUID + ".CheapAptBalance");
+                            cfg.set("players." + pUUID + ".CheapAptBalance", 0);
+                            money += 20000;
+                            money += safeMoney;
+                            cfg.set("players." + pUUID + ".money", money);
+                            AnarchyPlugin.plugin.saveConfigFile();
+                        } else {
+                            player.sendMessage(Component.text("Wrong usage, try /safe maybe?", TextColor.color(210, 11, 37)));
+                        }
                     } else {
                         player.sendMessage(Component.text("Wrong usage, try /safe maybe?", TextColor.color(210, 11, 37)));
                     }
@@ -367,109 +373,23 @@ public class SafeCommand implements CommandExecutor {
                         player.sendMessage(Component.text("Withdraw a positive amount of money.", TextColor.color(210, 11, 37)));
                     }
                 } else if (args[0].equals("sell")) {
-                    if (args[1] == null) {
-                        player.sendMessage(Component.text("Are you sure you want to sell this farm? You won't get the items in the stash back. You will keep the the amount the apartment cost and what was in the safe. If you are sure, please type /safe sell yes", TextColor.color(210, 11, 37)));
-                    } else if (args[1].equals("yes")) {
-                        player.sendMessage(Component.text("Sold farm.", TextColor.color(210, 11, 37)));
-                        player.removeScoreboardTag("doesPlayerOwnFarm");
-                        FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
-                        int money = cfg.getInt("players." + pUUID + ".money");
-                        int safeMoney = cfg.getInt("players." + pUUID + ".FarmBalance");
-                        cfg.set("players." + pUUID + ".FarmBalance", 0);
-                        money += 150000;
-                        money += safeMoney;
-                        cfg.set("players." + pUUID + ".money", money);
-                        AnarchyPlugin.plugin.saveConfigFile();
-
-                    } else {
-                        player.sendMessage(Component.text("Wrong usage, try /safe maybe?", TextColor.color(210, 11, 37)));
-                    }
-                }
-            } else {
-                player.sendMessage(Component.text("You don't own this farm.", TextColor.color(210, 11, 37)));
-            }
-        } else if (locationIsInCuboid(playerLoc, new Location(w,1038, 73, -694), new Location(w, 1036, 70, -697)))
-        {
-            if (tags.contains("doesPlayerOwnFarm")) {
-                if (args.length == 0) {
-                    //Cheap Apartment safe:
-                    FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
-                    cfg.set("players." + pUUID + ".FarmBalance", cfg.getInt("players." + pUUID + ".FarmBalance") + 0);
-                    player.sendMessage("------Farm------");
-                    player.sendMessage(Component.text("Current Balance: ").append(Component.text("$", TextColor.color(84, 255, 88))).append(Component.text(cfg.getInt("players." + pUUID + ".FarmBalance"))).append(Component.text(" / $500000")));
-                    player.sendMessage("Deposit money: /safe depo <int amount>");
-                    player.sendMessage("Withdraw money: /safe with <int amount>");
-                    player.sendMessage(Component.text("Sell farm: /safe sell", TextColor.color(255, 205, 44)));
-                } else if (args[0].equals("depo")) {
-                    FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
-                    int money = cfg.getInt("players." + pUUID + ".money");
-                    int amtToDepo = money;
-                    if (args.length == 2) {
-                        amtToDepo = Integer.parseInt(args[1]);
-                    }
-                    int FarmBalance = cfg.getInt("players." + pUUID + ".FarmBalance");
-                    if (amtToDepo >= 0) {
-                        if (FarmBalance < 60000) {
-                            if (amtToDepo > money) {
-                                amtToDepo = money;
-                            }
-                            if (amtToDepo + FarmBalance > 60000) {
-                                int maxAmtToDepo = FarmBalance - amtToDepo;
-                                money -= maxAmtToDepo;
-                                FarmBalance += maxAmtToDepo;
-                            } else {
-                                money -= amtToDepo;
-                                FarmBalance += amtToDepo;
-                            }
-                            player.performCommand("safe");
+                    if (args.length == 1) {
+                        player.sendMessage(Component.text("Are you sure you want to sell this farm? You won't get the items in the stash back. You will keep the the amount the farm cost and what was in the safe. If you are sure, please type /safe sell yes", TextColor.color(210, 11, 37)));
+                    } else if (args.length == 2) {
+                        if (args[1].equals("yes")) {
+                            player.sendMessage(Component.text("Sold farm.", TextColor.color(210, 11, 37)));
+                            player.removeScoreboardTag("doesPlayerOwnFarm");
+                            FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
+                            int money = cfg.getInt("players." + pUUID + ".money");
+                            int safeMoney = cfg.getInt("players." + pUUID + ".farmBalance");
+                            cfg.set("players." + pUUID + ".farmBalance", 0);
+                            money += 150000;
+                            money += safeMoney;
+                            cfg.set("players." + pUUID + ".money", money);
+                            AnarchyPlugin.plugin.saveConfigFile();
                         } else {
-                            player.sendMessage(Component.text("Your balance is full at the Farm ($500000).", TextColor.color(210, 11, 37)));
+                            player.sendMessage(Component.text("Wrong usage, try /safe maybe?", TextColor.color(210, 11, 37)));
                         }
-                    } else {
-                        player.sendMessage(Component.text("Deposit a positive amount of money.", TextColor.color(210, 11, 37)));
-                    }
-                    cfg.set("players." + pUUID + ".money", money);
-                    cfg.set("players." + pUUID + ".FarmBalance", FarmBalance);
-                    player.performCommand("safe");
-                    AnarchyPlugin.plugin.saveConfigFile();
-                } else if (args[0].equals("with")) {
-                    FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
-                    int money = cfg.getInt("players." + pUUID + ".money");
-                    int FarmBalance = cfg.getInt("players." + pUUID + ".FarmBalance");
-                    int amtToWith = FarmBalance;
-                    if (args.length == 2) {
-                        amtToWith = Integer.parseInt(args[1]);
-                    }
-                    if (amtToWith >= 0) {
-                        if (amtToWith > FarmBalance) {
-                            money += FarmBalance;
-                            FarmBalance = 0;
-                        } else {
-                            FarmBalance -= amtToWith;
-                            money += amtToWith;
-                        }
-                        cfg.set("players." + pUUID + ".money", money);
-                        cfg.set("players." + pUUID + ".FarmBalance", FarmBalance);
-                        AnarchyPlugin.plugin.saveConfigFile();
-                        player.performCommand("safe");
-                    } else {
-                        player.sendMessage(Component.text("Withdraw a positive amount of money.", TextColor.color(210, 11, 37)));
-                    }
-                } else if (args[0].equals("sell")) {
-                    if (args[1] == null) {
-                        player.sendMessage(Component.text("Are you sure you want to sell this farm? You won't get the items in the stash back. You will keep the the amount the apartment cost and what was in the safe. If you are sure, please type /safe sell yes", TextColor.color(210, 11, 37)));
-                    } else if (args[1].equals("yes")) {
-                        player.sendMessage(Component.text("Sold farm.", TextColor.color(210, 11, 37)));
-                        player.removeScoreboardTag("doesPlayerOwnFarm");
-                        FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
-                        int money = cfg.getInt("players." + pUUID + ".money");
-                        int safeMoney = cfg.getInt("players." + pUUID + ".FarmBalance");
-                        cfg.set("players." + pUUID + ".FarmBalance", 0);
-                        money += 150000;
-                        money += safeMoney;
-                        cfg.set("players." + pUUID + ".money", money);
-                        AnarchyPlugin.plugin.saveConfigFile();
-
                     } else {
                         player.sendMessage(Component.text("Wrong usage, try /safe maybe?", TextColor.color(210, 11, 37)));
                     }
@@ -545,20 +465,23 @@ public class SafeCommand implements CommandExecutor {
                         player.sendMessage(Component.text("Withdraw a positive amount of money.", TextColor.color(210, 11, 37)));
                     }
                 } else if (args[0].equals("sell")) {
-                    if (args[1] == null) {
+                    if (args.length == 1) {
                         player.sendMessage(Component.text("Are you sure you want to sell this bunker? You won't get the items in the stash back. You will keep the the amount the bunker cost and what was in the safe. If you are sure, please type /safe sell yes", TextColor.color(210, 11, 37)));
-                    } else if (args[1].equals("yes")) {
-                        player.sendMessage(Component.text("Sold bunker.", TextColor.color(210, 11, 37)));
-                        player.removeScoreboardTag("doesPlayerOwnBunker");
-                        FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
-                        int money = cfg.getInt("players." + pUUID + ".money");
-                        int safeMoney = cfg.getInt("players." + pUUID + ".bunkerBalance");
-                        cfg.set("players." + pUUID + ".bunkerBalance", 0);
-                        money += 1000000;
-                        money += safeMoney;
-                        cfg.set("players." + pUUID + ".money", money);
-                        AnarchyPlugin.plugin.saveConfigFile();
-
+                    } else if (args.length == 2) {
+                        if (args[1].equals("yes")) {
+                            player.sendMessage(Component.text("Sold bunker.", TextColor.color(210, 11, 37)));
+                            player.removeScoreboardTag("doesPlayerOwnBunker");
+                            FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
+                            int money = cfg.getInt("players." + pUUID + ".money");
+                            int safeMoney = cfg.getInt("players." + pUUID + ".bunkerBalance");
+                            cfg.set("players." + pUUID + ".bunkerBalance", 0);
+                            money += 1000000;
+                            money += safeMoney;
+                            cfg.set("players." + pUUID + ".money", money);
+                            AnarchyPlugin.plugin.saveConfigFile();
+                        } else {
+                            player.sendMessage(Component.text("Wrong usage, try /safe maybe?", TextColor.color(210, 11, 37)));
+                        }
                     } else {
                         player.sendMessage(Component.text("Wrong usage, try /safe maybe?", TextColor.color(210, 11, 37)));
                     }

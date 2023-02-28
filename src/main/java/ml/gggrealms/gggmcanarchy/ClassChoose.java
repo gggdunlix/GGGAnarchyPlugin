@@ -94,7 +94,6 @@ public class ClassChoose implements CommandExecutor {
                     player.sendMessage(Component.text("You spawned as ").append(Component.text("rider", TextColor.color(13, 25, 200))));
                     player.sendMessage(Component.text("You must wait ").append(Component.text("240 seconds", TextColor.color(255, 230, 87))).append(Component.text(" before spawning as this class again.", TextColor.color(255, 255, 255))));
                     config.set("players." + pUUID + ".riderCooldown", 240);
-                    AnarchyPlugin.plugin.startRiderCountdown(player);
                     ArrayList<Location> locations = new ArrayList<Location>();
                     locations.add(new Location(player.getWorld(), 866, 65, -1030));
                     locations.add(new Location(player.getWorld(), 815, 63, -1057));
@@ -104,7 +103,7 @@ public class ClassChoose implements CommandExecutor {
                     Location chosenLoc = locations.get(random_int);
                     player.teleport(chosenLoc);
                     player.removeScoreboardTag("isPlayerInHub");
-                    player.addScoreboardTag("riderClass");
+                    player.addScoreboardTag("classRider");
 
                     Donkey donkey = (Donkey) Bukkit.getWorld("world").spawnEntity(player.getLocation(), EntityType.DONKEY);
                     donkey.setTamed(true);

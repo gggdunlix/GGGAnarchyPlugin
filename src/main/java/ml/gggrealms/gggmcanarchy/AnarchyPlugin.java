@@ -22,7 +22,10 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -76,7 +79,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         this.getCommand("sell").setExecutor(new SellCommand());
         this.getCommand("buy").setExecutor(new BuyCommand());
         this.getCommand("join").setExecutor(new JoinCommand());
-         this.getCommand("stash").setExecutor(new StashCommand());
+        this.getCommand("stash").setExecutor(new StashCommand());
         this.getCommand("safe").setExecutor(new SafeCommand());
         this.getCommand("safe").setTabCompleter(new SafeTabCompleter());
         this.getCommand("givemoney").setExecutor(new GiveMoneyCommand());
@@ -84,7 +87,6 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         this.getCommand("autospawn").setTabCompleter(new AutospawnTabCompleter());
         this.getCommand("class").setExecutor(new ClassChoose());
         this.getCommand("class").setTabCompleter(new classOnTabCompleteClass());
-
 
 
         Bukkit.getServer().getConsoleSender().sendMessage("Plugin now activated, version 0.0.1");
@@ -199,10 +201,15 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
             }
         }.runTaskTimer(Bukkit.getPluginManager().getPlugin("GGG-Anarchy"), 20, 20);
         FastBoard board = new FastBoard(joinedP);
-        board.updateTitle("Info");
+        board.updateTitle("AnarCraft");
         new BukkitRunnable() {
             @Override
             public void run() {
+                if (getFaction(joinedP).equals("farmer")) {
+                    if (joinedP.getFoodLevel() <= 8) {
+                        joinedP.setFoodLevel(8);
+                    }
+                }
                 FileConfiguration cfg = getConfigFile();
                 board.updateLine(0, "Faction: " + ChatColor.UNDERLINE + getFaction(joinedP));
                 board.updateLine(1, "Money: " + ChatColor.GREEN + "$" + ChatColor.WHITE + cfg.getInt("players." + pUUID + ".money"));
@@ -218,21 +225,35 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
                 } else if (ping >= 600) {
                     board.updateLine(2, "Ping: " + ChatColor.DARK_RED + ping + ChatColor.WHITE + "ms");
                 }
+                int rank = cfg.getInt("players." + pUUID + ".rank");
+                if (rank == 0) {
+                    board.updateLine(3, "Rank: " + ChatColor.DARK_GRAY + rank);
+                } else if (rank < 20000) {
+                    board.updateLine(3, "Rank: " + ChatColor.GRAY + rank);
+                } else if (rank < 60000) {
+                    board.updateLine(3, "Rank: " + ChatColor.WHITE + rank);
+                } else {
+                    board.updateLine(3, "Rank: " + ChatColor.GREEN + rank);
+                }
+                int propCount = getPropCount(joinedP);
+                if (propCount > 3) {
+                    board.updateLine(4, "# Props: " + ChatColor.RED + propCount);
+                } else board.updateLine(4, "# Props: " + propCount);
 
             }
         }.runTaskTimer(Bukkit.getPluginManager().getPlugin("GGG-Anarchy"), 1, 1);
     }
-    public void startRiderCountdown(Player player) {
-        FileConfiguration customConfig = getConfigFile();
-        UUID pUUID = player.identity().uuid();
-        BukkitScheduler scheduler = getServer().getScheduler();
-        scheduler.scheduleSyncRepeatingTask(this, new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        }, 20, 20);
+    public int getPropCount(Player player) {
+        Set<String> tags = player.getScoreboardTags();
+        int propertyCount = 0;
+        if (tags.contains("doesPlayerOwnCheapApt")) propertyCount++;
+        if (tags.contains("doesPlayerOwnSmallApt")) propertyCount++;
+        if (tags.contains("doesPlayerOwnUSBankOffice")) propertyCount++;
+        if (tags.contains("doesPlayerOwnFarm")) propertyCount++;
+        if (tags.contains("doesPlayerOwnBunker")) propertyCount++;
+        return  propertyCount;
     }
+
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent event) {
         Player deadPlayer = event.getPlayer();
@@ -261,7 +282,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         int autospawnRate = customConfig.getInt("players." + pUUID + ".autospawnRate");
 
         if (customConfig.getBoolean("players." + pUUID + ".autospawn")) {
-            spawnedPlayer.sendMessage("Automatically spawning as default in " + customConfig.getInt("players." + pUUID + ".autospawnRate"));
+            spawnedPlayer.sendMessage("Automatically spawning as default in " + customConfig.getInt("players." + pUUID + ".autospawnRate" + " seconds. (/as)"));
             new BukkitRunnable() {
 
                 @Override
@@ -314,6 +335,18 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
                     stack.setItemStack(st);
                 }
             }
+        }
+    }
+    @EventHandler
+    public void onCloseInv(InventoryCloseEvent event) {
+        Inventory i = event.getInventory();
+        InventoryView inventoryView = event.getView();
+        Player p = (Player) event.getPlayer();
+        UUID pU = p.identity().uuid();
+        if (inventoryView.title().equals("Cheap Apartment Stash")) {
+            FileConfiguration cfg = getConfigFile();
+            String contents = InventoryDecoder.inventoryToBase64(i);
+            cfg.set("stashes." + pU + ".cheapAptStash", contents);
         }
     }
     @EventHandler
