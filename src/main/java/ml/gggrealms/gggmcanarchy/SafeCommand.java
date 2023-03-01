@@ -418,11 +418,11 @@ public class SafeCommand implements CommandExecutor {
                     }
                     int bunkerBalance = cfg.getInt("players." + pUUID + ".bunkerBalance");
                     if (amtToDepo >= 0) {
-                        if (bunkerBalance < 1000000) {
+                        if (bunkerBalance < 1500000) {
                             if (amtToDepo > money) {
                                 amtToDepo = money;
                             }
-                            if (amtToDepo + bunkerBalance > 1000000) {
+                            if (amtToDepo + bunkerBalance > 1500000) {
                                 int maxAmtToDepo = bunkerBalance - amtToDepo;
                                 money -= maxAmtToDepo;
                                 bunkerBalance += maxAmtToDepo;
