@@ -196,11 +196,15 @@ public class EnterCommand implements CommandExecutor {
             // Casino elevator Up -> down
             player.teleport(new Location(player.getWorld(), 981,32,-1211));
         } else if (locationIsInCuboid(pLoc, new Location(w, 762,69,-599), new Location(w, 756,66,-601))) {
+            // Bunker entry
             if (tags.contains("doesPlayerOwnBunker")) {
                 player.teleport(new Location(player.getWorld(), 759, 58, -608));
             } else {
                 player.sendMessage(Component.text("You don't own this property. Type /buy to buy it.", TextColor.color(210, 11, 37)));
             }
+        } else if (locationIsInCuboid(pLoc, new Location(w, 00,00,-00), new Location(w, 00,00,-00))) {
+            // Bunker Exit
+            player.teleport(new Location(player.getWorld(), 00,00,-00));
         } else if (locationIsInCuboid(pLoc, new Location(w, 985,36,-1209), new Location(w, 981,31,-1211))) {
             // Casino elevator Down -> Up
             player.teleport(new Location(player.getWorld(), 920,82,-1223));
