@@ -129,7 +129,7 @@ public class SafeCommand implements CommandExecutor {
                     FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
                     cfg.set("players." + pUUID + ".USBankOfficeBalance", cfg.getInt("players." + pUUID + ".USBankOfficeBalance") + 0);
                     player.sendMessage("------US Bank Office------");
-                    player.sendMessage(Component.text("Current Balance: ").append(Component.text("$", TextColor.color(84, 255, 88))).append(Component.text(cfg.getInt("players." + pUUID + ".USBankOfficeBalance"))).append(Component.text(" / $60000")));
+                    player.sendMessage(Component.text("Current Balance: ").append(Component.text("$", TextColor.color(84, 255, 88))).append(Component.text(cfg.getInt("players." + pUUID + ".USBankOfficeBalance"))).append(Component.text(" / $1000000")));
                     player.sendMessage("Deposit money: /safe depo <int amount>");
                     player.sendMessage("Withdraw money: /safe with <int amount>");
                     player.sendMessage(Component.text("Sell apartment: /safe sell", TextColor.color(255, 205, 44)));
@@ -162,7 +162,7 @@ public class SafeCommand implements CommandExecutor {
                         player.sendMessage(Component.text("Deposit a positive amount of money.", TextColor.color(210, 11, 37)));
                     }
                     cfg.set("players." + pUUID + ".money", money);
-                    cfg.set("players." + pUUID + ".CheapAptBalance", USBankOfficeBalance);
+                    cfg.set("players." + pUUID + ".USBankOfficeBalance", USBankOfficeBalance);
                     player.performCommand("safe");
                     AnarchyPlugin.plugin.saveConfigFile();
                 } else if (args[0].equals("with")) {
@@ -182,7 +182,7 @@ public class SafeCommand implements CommandExecutor {
                             money += amtToWith;
                         }
                         cfg.set("players." + pUUID + ".money", money);
-                        cfg.set("players." + pUUID + ".CheapAptBalance", USBankOfficeBalance);
+                        cfg.set("players." + pUUID + ".USBankOfficeBalance", USBankOfficeBalance);
                         AnarchyPlugin.plugin.saveConfigFile();
                         player.performCommand("safe");
                     } else {
@@ -311,9 +311,9 @@ public class SafeCommand implements CommandExecutor {
                 if (args.length == 0) {
                     //Cheap Apartment safe:
                     FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
-                    cfg.set("players." + pUUID + ".FarmBalance", cfg.getInt("players." + pUUID + ".FarmBalance") + 0);
+                    cfg.set("players." + pUUID + ".farmBalance", cfg.getInt("players." + pUUID + ".farmBalance") + 0);
                     player.sendMessage("------Farm------");
-                    player.sendMessage(Component.text("Current Balance: ").append(Component.text("$", TextColor.color(84, 255, 88))).append(Component.text(cfg.getInt("players." + pUUID + ".FarmBalance"))).append(Component.text(" / $500000")));
+                    player.sendMessage(Component.text("Current Balance: ").append(Component.text("$", TextColor.color(84, 255, 88))).append(Component.text(cfg.getInt("players." + pUUID + ".farmBalance"))).append(Component.text(" / $500000")));
                     player.sendMessage("Deposit money: /safe depo <int amount>");
                     player.sendMessage("Withdraw money: /safe with <int amount>");
                     player.sendMessage(Component.text("Sell farm: /safe sell", TextColor.color(255, 205, 44)));
@@ -324,19 +324,19 @@ public class SafeCommand implements CommandExecutor {
                     if (args.length == 2) {
                         amtToDepo = Integer.parseInt(args[1]);
                     }
-                    int FarmBalance = cfg.getInt("players." + pUUID + ".FarmBalance");
+                    int farmBalance = cfg.getInt("players." + pUUID + ".farmBalance");
                     if (amtToDepo >= 0) {
-                        if (FarmBalance < 60000) {
+                        if (farmBalance < 500000) {
                             if (amtToDepo > money) {
                                 amtToDepo = money;
                             }
-                            if (amtToDepo + FarmBalance > 60000) {
-                                int maxAmtToDepo = FarmBalance - amtToDepo;
+                            if (amtToDepo + FarmBalance > 500000) {
+                                int maxAmtToDepo = farmBalance - amtToDepo;
                                 money -= maxAmtToDepo;
-                                FarmBalance += maxAmtToDepo;
+                                farmBalance += maxAmtToDepo;
                             } else {
                                 money -= amtToDepo;
-                                FarmBalance += amtToDepo;
+                                farmBalance += amtToDepo;
                             }
                             player.performCommand("safe");
                         } else {
@@ -346,27 +346,27 @@ public class SafeCommand implements CommandExecutor {
                         player.sendMessage(Component.text("Deposit a positive amount of money.", TextColor.color(210, 11, 37)));
                     }
                     cfg.set("players." + pUUID + ".money", money);
-                    cfg.set("players." + pUUID + ".FarmBalance", FarmBalance);
+                    cfg.set("players." + pUUID + ".farmBalance", FarmBalance);
                     player.performCommand("safe");
                     AnarchyPlugin.plugin.saveConfigFile();
                 } else if (args[0].equals("with")) {
                     FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
                     int money = cfg.getInt("players." + pUUID + ".money");
-                    int FarmBalance = cfg.getInt("players." + pUUID + ".FarmBalance");
-                    int amtToWith = FarmBalance;
+                    int FarmBalance = cfg.getInt("players." + pUUID + ".farmBalance");
+                    int amtToWith = farmBalance;
                     if (args.length == 2) {
                         amtToWith = Integer.parseInt(args[1]);
                     }
                     if (amtToWith >= 0) {
-                        if (amtToWith > FarmBalance) {
-                            money += FarmBalance;
-                            FarmBalance = 0;
+                        if (amtToWith > farmBalance) {
+                            money += farmBalance;
+                            farmBalance = 0;
                         } else {
-                            FarmBalance -= amtToWith;
+                            farmBalance -= amtToWith;
                             money += amtToWith;
                         }
                         cfg.set("players." + pUUID + ".money", money);
-                        cfg.set("players." + pUUID + ".FarmBalance", FarmBalance);
+                        cfg.set("players." + pUUID + ".farmBalance", farmBalance);
                         AnarchyPlugin.plugin.saveConfigFile();
                         player.performCommand("safe");
                     } else {
