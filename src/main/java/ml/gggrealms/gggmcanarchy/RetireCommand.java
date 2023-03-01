@@ -20,7 +20,6 @@ public class RetireCommand implements CommandExecutor {
         Location playerLoc = player.getLocation();
         //determine using playerWantedStatus whether they are allowed to leave
 
-
         if (playerWantedStatus == false) {
             canPlayerLeave = true;
         } else {
