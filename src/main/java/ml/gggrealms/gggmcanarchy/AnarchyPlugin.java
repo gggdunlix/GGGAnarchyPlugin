@@ -72,6 +72,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         }.runTaskTimer(Bukkit.getPluginManager().getPlugin("GGG-Anarchy"), 5*60*20, 5*60*20);
 
         this.getCommand("savequit").setExecutor(new SaveQuit());
+        this.getCommand("editcfg").setExecutor(new EditCfg());
         this.getCommand("bugreport").setExecutor(new BugreportCommand());
         this.getCommand("enter").setExecutor(new EnterCommand());
         this.getCommand("retire").setExecutor(new RetireCommand());
@@ -345,8 +346,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         UUID pU = p.identity().uuid();
         if (inventoryView.title().equals("Cheap Apartment Stash")) {
             FileConfiguration cfg = getConfigFile();
-            String contents = InventoryDecoder.inventoryToBase64(i);
-            cfg.set("stashes." + pU + ".cheapAptStash", contents);
+            cfg.set("stashes." + pU + ".cheapAptStash", i);
         }
     }
     @EventHandler

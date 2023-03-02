@@ -76,6 +76,7 @@ public class BuyCommand implements CommandExecutor {
                         money -= 20000;
                         cfg.set("players." + pU + ".money", money);
                         p.addScoreboardTag("doesPlayerOwnCheapApt");
+                        cfg.set("players." + pU + ".rank", cfg.getInt("players." + pU + ".rank") + 1000);
                         p.performCommand("e");
                     } else {
                         p.sendMessage(Component.text("You do not have enough money. You need " + (20000 - money) + " more.", TextColor.color(210, 11, 37)));
@@ -127,7 +128,7 @@ public class BuyCommand implements CommandExecutor {
                 AnarchyPlugin.plugin.saveConfigFile();
             }
             else if (locationIsInCuboid(p.getLocation(), new Location(w, 762,69,-599), new Location(w, 756,66,-601))) {
-                //Farm
+                //Bunker
                 FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
                 int money = cfg.getInt("players." + pU + ".money");
                 if (!tags.contains("doesPlayerOwnBunker")) {

@@ -48,7 +48,7 @@ public class SafeCommand implements CommandExecutor {
                             amtToDepo = money;
                         }
                         if (amtToDepo + MBABankBalance > 200000) {
-                            int maxAmtToDepo = MBABankBalance - amtToDepo;
+                            int maxAmtToDepo = 200000 - MBABankBalance;
                             money -= maxAmtToDepo;
                             MBABankBalance += maxAmtToDepo;
                         } else {
@@ -147,7 +147,7 @@ public class SafeCommand implements CommandExecutor {
                                 amtToDepo = money;
                             }
                             if (amtToDepo + USBankOfficeBalance > 1000000) {
-                                int maxAmtToDepo = USBankOfficeBalance - amtToDepo;
+                                int maxAmtToDepo = 1000000 - USBankOfficeBalance;
                                 money -= maxAmtToDepo;
                                 USBankOfficeBalance += maxAmtToDepo;
                             } else {
@@ -193,7 +193,7 @@ public class SafeCommand implements CommandExecutor {
                         player.sendMessage(Component.text("Are you sure you want to sell this apartment? You won't get the items in the stash back. You will keep the the amount the apartment cost and what was in the safe. If you are sure, please type /safe sell yes", TextColor.color(210, 11, 37)));
                     } else if (args.length == 2) {
                         if (args[1].equals("yes")) {
-                            player.sendMessage(Component.text("Sold apartment.", TextColor.color(210, 11, 37)));
+                            player.sendMessage(Component.text("Sold office.", TextColor.color(210, 11, 37)));
                             player.removeScoreboardTag("doesPlayerOwnUSBankOffice");
                             FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
                             int money = cfg.getInt("players." + pUUID + ".money");
@@ -201,6 +201,7 @@ public class SafeCommand implements CommandExecutor {
                             cfg.set("players." + pUUID + ".USBankOfficeBalance", 0);
                             money += 300000;
                             money += safeMoney;
+                            cfg.set("players." + pUUID + ".rank", cfg.getInt("players." + pUUID + ".rank") - 20000);
                             cfg.set("players." + pUUID + ".money", money);
                             AnarchyPlugin.plugin.saveConfigFile();
                         } else {
@@ -239,7 +240,7 @@ public class SafeCommand implements CommandExecutor {
                                 amtToDepo = money;
                             }
                             if (amtToDepo + CheapAptBalance > 60000) {
-                                int maxAmtToDepo = CheapAptBalance - amtToDepo;
+                                int maxAmtToDepo = 60000 - CheapAptBalance;
                                 money -= maxAmtToDepo;
                                 CheapAptBalance += maxAmtToDepo;
                             } else {
@@ -293,6 +294,7 @@ public class SafeCommand implements CommandExecutor {
                             cfg.set("players." + pUUID + ".CheapAptBalance", 0);
                             money += 20000;
                             money += safeMoney;
+                            cfg.set("players." + pUUID + ".rank", cfg.getInt("players." + pUUID + ".rank") - 1000);
                             cfg.set("players." + pUUID + ".money", money);
                             AnarchyPlugin.plugin.saveConfigFile();
                         } else {
@@ -330,8 +332,8 @@ public class SafeCommand implements CommandExecutor {
                             if (amtToDepo > money) {
                                 amtToDepo = money;
                             }
-                            if (amtToDepo + FarmBalance > 500000) {
-                                int maxAmtToDepo = farmBalance - amtToDepo;
+                            if (amtToDepo + farmBalance > 500000) {
+                                int maxAmtToDepo = 500000 - farmBalance;
                                 money -= maxAmtToDepo;
                                 farmBalance += maxAmtToDepo;
                             } else {
@@ -346,13 +348,13 @@ public class SafeCommand implements CommandExecutor {
                         player.sendMessage(Component.text("Deposit a positive amount of money.", TextColor.color(210, 11, 37)));
                     }
                     cfg.set("players." + pUUID + ".money", money);
-                    cfg.set("players." + pUUID + ".farmBalance", FarmBalance);
+                    cfg.set("players." + pUUID + ".farmBalance", farmBalance);
                     player.performCommand("safe");
                     AnarchyPlugin.plugin.saveConfigFile();
                 } else if (args[0].equals("with")) {
                     FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
                     int money = cfg.getInt("players." + pUUID + ".money");
-                    int FarmBalance = cfg.getInt("players." + pUUID + ".farmBalance");
+                    int farmBalance = cfg.getInt("players." + pUUID + ".farmBalance");
                     int amtToWith = farmBalance;
                     if (args.length == 2) {
                         amtToWith = Integer.parseInt(args[1]);
@@ -385,6 +387,7 @@ public class SafeCommand implements CommandExecutor {
                             cfg.set("players." + pUUID + ".farmBalance", 0);
                             money += 150000;
                             money += safeMoney;
+                            cfg.set("players." + pUUID + ".rank", cfg.getInt("players." + pUUID + ".rank") - 5000);
                             cfg.set("players." + pUUID + ".money", money);
                             AnarchyPlugin.plugin.saveConfigFile();
                         } else {
@@ -423,7 +426,7 @@ public class SafeCommand implements CommandExecutor {
                                 amtToDepo = money;
                             }
                             if (amtToDepo + bunkerBalance > 1500000) {
-                                int maxAmtToDepo = bunkerBalance - amtToDepo;
+                                int maxAmtToDepo = 1500000 - bunkerBalance;
                                 money -= maxAmtToDepo;
                                 bunkerBalance += maxAmtToDepo;
                             } else {
@@ -477,6 +480,7 @@ public class SafeCommand implements CommandExecutor {
                             cfg.set("players." + pUUID + ".bunkerBalance", 0);
                             money += 1000000;
                             money += safeMoney;
+                            cfg.set("players." + pUUID + ".rank", cfg.getInt("players." + pUUID + ".rank") - 50000);
                             cfg.set("players." + pUUID + ".money", money);
                             AnarchyPlugin.plugin.saveConfigFile();
                         } else {
