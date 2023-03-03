@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class classOnTabCompleteClass implements TabCompleter {
-    private static final String[] COMMANDS = { "default", "rider", "farmer", "horseman"};
+    private static final String[] COMMANDS = { "default", "thug", "farmer", "horseman", "agent", "bankrobber", "crackhead", "heister", "pilot", "employee", "drugslinger", "gunsmith", "captain"};
     //create a static array of values
 
     @Override

@@ -202,9 +202,9 @@ public class EnterCommand implements CommandExecutor {
             } else {
                 player.sendMessage(Component.text("You don't own this property. Type /buy to buy it.", TextColor.color(210, 11, 37)));
             }
-        } else if (locationIsInCuboid(pLoc, new Location(w, 00,00,-00), new Location(w, 00,00,-00))) {
+        } else if (locationIsInCuboid(pLoc, new Location(w, 760,60,-607), new Location(w, 758,57,-609))) {
             // Bunker Exit
-            player.teleport(new Location(player.getWorld(), 00,00,-00));
+            player.teleport(new Location(player.getWorld(), 759.5,67,-599.5));
         } else if (locationIsInCuboid(pLoc, new Location(w, 985,36,-1209), new Location(w, 981,31,-1211))) {
             // Casino elevator Down -> Up
             player.teleport(new Location(player.getWorld(), 920,82,-1223));

@@ -81,6 +81,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         this.getCommand("buy").setExecutor(new BuyCommand());
         this.getCommand("join").setExecutor(new JoinCommand());
         this.getCommand("stash").setExecutor(new StashCommand());
+        this.getCommand("properties").setExecutor(new PropertiesCommand());
         this.getCommand("safe").setExecutor(new SafeCommand());
         this.getCommand("safe").setTabCompleter(new SafeTabCompleter());
         this.getCommand("givemoney").setExecutor(new GiveMoneyCommand());
@@ -265,6 +266,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         deadPlayer.removeScoreboardTag("classDev");
 
         deadPlayer.removeScoreboardTag("factionFarmer");
+        deadPlayer.removeScoreboardTag("factionAgent");
         deadPlayer.removeScoreboardTag("factionLeather");
         deadPlayer.removeScoreboardTag("factionArmor");
         editDataConfig("players."+ deadPlayer.identity().uuid() + ".money", 0);
@@ -299,7 +301,6 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         FileConfiguration config = getConfig();
         config.set(datapath, value);
         saveConfig();
-
     }
     public String getDataConfig(String datapath) {
         FileConfiguration config = getConfig();
@@ -311,10 +312,12 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         String faction = "none";
         if (tags.contains("factionFarmer")) {
             faction = "farmer";
-
         }
         if (tags.contains("factionLeather")) {
             faction = "leatherworker";
+        }
+        if (tags.contains("factionAgent")) {
+            faction = "agent";
         }
         if (tags.contains("factionArmor")) {
             faction = "armorer";
@@ -346,7 +349,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         UUID pU = p.identity().uuid();
         if (inventoryView.title().equals("Cheap Apartment Stash")) {
             FileConfiguration cfg = getConfigFile();
-            cfg.set("stashes." + pU + ".cheapAptStash", i);
+            cfg.set("stashes." + pU + ".cheapAptStash", inventoryView.getTopInventory());
         }
     }
     @EventHandler

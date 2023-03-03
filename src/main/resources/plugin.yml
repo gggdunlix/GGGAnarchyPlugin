@@ -57,7 +57,11 @@ commands:
       - "br"
       - "breport"
   properties:
-    description: "Shows info about properties around the world"
+    description: "Shows info about properties/houses around the world"
+    aliases:
+      - "props"
+      - "proplist"
+      - "listprops"
   stash:
     description: "Opens the weapons/items stash inside properties."
   editcfg:

@@ -58,17 +58,41 @@ public class ClassChoose implements CommandExecutor {
         if (tags.contains("doesPlayerOwnFarm")) {
             doesPlayerOwnFarm = true;
         }
+        Boolean doesPlayerOwnUSBankOffice = false;
+        if (tags.contains("doesPlayerOwnUSBankOffice")) {
+            doesPlayerOwnUSBankOffice = true;
+        }
+        Boolean doesPlayerOwnBunker = false;
+        if (tags.contains("doesPlayerOwnBunker")) {
+            doesPlayerOwnBunker = true;
+        }
+        Boolean doesPlayerOwnCasino = false;
+        if (tags.contains("doesPlayerOwnCasino")) {
+            doesPlayerOwnCasino = true;
+        }
 
         if (isPlayerInHub) {
             if (args.length == 0) {
                 player.sendMessage(Component.text("Class List: ", TextColor.color(148, 144, 150)).append(Component.text("use /c <class-name> to spawn in.", TextColor.color(107, 175, 255))));
-                if (doesPlayerOwnFarm) {
-                    player.sendMessage(Component.text("horseman: ", TextColor.color(255,255,12)).append(Component.text("Spawns with a horse at a farm.", TextColor.color(255,255,255))));
-                } else {
+                if (!doesPlayerOwnFarm) {
                     player.sendMessage(Component.text("horseman: ", TextColor.color(255,255,12)).append(Component.text("Spawns with a horse at a farm. - REQUIRES PROPERTY: Farm", TextColor.color(210, 11, 37))));
                 }
+                if (!doesPlayerOwnUSBankOffice) {
+                    player.sendMessage(Component.text("bankrobber: ", TextColor.color(255,255,12)).append(Component.text("Spawns prepared for a bank robbery. - REQUIRES PROPERTY: US Bank Office", TextColor.color(210, 11, 37))));
+
+                }
+                if (doesPlayerOwnFarm) {
+                    player.sendMessage(Component.text("horseman: ", TextColor.color(255,255,12)).append(Component.text("Spawns with a horse at a farm.", TextColor.color(255,255,255))));
+                }
+                if (doesPlayerOwnUSBankOffice) {
+                    player.sendMessage(Component.text("bankrobber: ", TextColor.color(255,255,12)).append(Component.text("Spawns prepared for a bank robbery.", TextColor.color(255,255,255))));
+                }
+                if (doesPlayerOwnCheapApt) {
+                    player.sendMessage(Component.text("thug: ", TextColor.color(255,255,12)).append(Component.text("Spawns as a common thug with a Glock 19.", TextColor.color(255,255,255))));
+                }
                 player.sendMessage(Component.text("farmer: ", TextColor.color(255,255,12)).append(Component.text("Spawns with a farming tool near a farm.", TextColor.color(255,255,255))));
-                player.sendMessage(Component.text("rider: ", TextColor.color(255,255,12)).append(Component.text("Spawns with no items and a slow horse at a random location.", TextColor.color(255,255,255))));
+                player.sendMessage(Component.text("farmer: ", TextColor.color(255,255,12)).append(Component.text("Spawns with a farming tool near a farm.", TextColor.color(255,255,255))));
+                // player.sendMessage(Component.text("rider: ", TextColor.color(255,255,12)).append(Component.text("Spawns with no items and a slow horse at a random location.", TextColor.color(255,255,255))));
                 player.sendMessage(Component.text("default: ", TextColor.color(255,255,12)).append(Component.text("Spawns with no items at a random location.", TextColor.color(255,255,255))));
                 player.sendMessage("^^^ Here are a list of classes that are available. Some require properties and/or come with other special perks. ^^^");
             } else if (args[0].equals("default")) {
@@ -89,7 +113,7 @@ public class ClassChoose implements CommandExecutor {
                 player.removeScoreboardTag("isPlayerInHub");
                 player.addScoreboardTag("classDefault");
 
-            } else if (args[0].equals("rider")) {
+            } else if (args[0].equals("..........rider")) {
                 if (config.getInt("players." + pUUID + ".riderCooldown") <= 0) {
                     player.sendMessage(Component.text("You spawned as ").append(Component.text("rider", TextColor.color(13, 25, 200))));
                     player.sendMessage(Component.text("You must wait ").append(Component.text("240 seconds", TextColor.color(255, 230, 87))).append(Component.text(" before spawning as this class again.", TextColor.color(255, 255, 255))));
