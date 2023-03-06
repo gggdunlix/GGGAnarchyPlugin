@@ -20,6 +20,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
@@ -228,15 +229,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
                     board.updateLine(2, "Ping: " + ChatColor.DARK_RED + ping + ChatColor.WHITE + "ms");
                 }
                 int rank = cfg.getInt("players." + pUUID + ".rank");
-                if (rank == 0) {
-                    board.updateLine(3, "Rank: " + ChatColor.DARK_GRAY + rank);
-                } else if (rank < 20000) {
-                    board.updateLine(3, "Rank: " + ChatColor.GRAY + rank);
-                } else if (rank < 60000) {
-                    board.updateLine(3, "Rank: " + ChatColor.WHITE + rank);
-                } else {
-                    board.updateLine(3, "Rank: " + ChatColor.GREEN + rank);
-                }
+                board.updateLine(3, getRank(joinedP));
                 int propCount = getPropCount(joinedP);
                 if (propCount > 3) {
                     board.updateLine(4, "# Props: " + ChatColor.RED + propCount);
@@ -272,7 +265,6 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         editDataConfig("players."+ deadPlayer.identity().uuid() + ".money", 0);
         saveConfig();
     }
-    
     @EventHandler
     public void onPlayerPostRespawn(PlayerPostRespawnEvent event) {
         Player spawnedPlayer = event.getPlayer();
@@ -324,6 +316,26 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         }
         return faction;
     }
+    public String getRank(Player p) {
+        FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
+        UUID pU = p.identity().uuid();
+        int rank = cfg.getInt("players." + pU + ".rank");
+        String toReturn = "";
+        if (rank == 0) {
+            toReturn = ChatColor.BLACK + Integer.toString(rank);
+        } else if (rank < 5000){
+            toReturn = ChatColor.DARK_GRAY + Integer.toString(rank);
+        } else if (rank < 15000){
+            toReturn = ChatColor.GRAY + Integer.toString(rank);
+        } else if (rank < 35000){
+            toReturn = ChatColor.WHITE + Integer.toString(rank);
+        } else if (rank < 60000){
+            toReturn = ChatColor.GREEN + Integer.toString(rank);
+        } else if (rank < 100000){
+            toReturn = ChatColor.AQUA + Integer.toString(rank);
+        }
+        return toReturn;
+    }
     @EventHandler
     public void onBlockBreak(BlockDropItemEvent event) {
         Player p = event.getPlayer();
@@ -364,5 +376,19 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
             }
         }
     }
-
+    @EventHandler
+    public void onPlayerDamage(EntityDamageByEntityEvent event) {
+        Entity damager = event.getDamager();
+        Entity recip = event.getEntity();
+        UUID damagerUUID = damager.getUniqueId();
+        UUID recipUUID = damager.getUniqueId();
+        FileConfiguration cfg = getConfigFile();
+        int damagerParty = cfg.getInt("players." + damagerUUID + ".party", -1);
+        int recipParty = cfg.getInt("players." + damagerUUID + ".party", -1);
+        if (damagerParty == recipParty && damagerParty != -1) {
+            event.setCancelled(true);
+        } else {
+            damager.sendMessage(Component.text("Blocked friendly fire.", TextColor.color(210, 11, 37)));
+        }
+    }
 }

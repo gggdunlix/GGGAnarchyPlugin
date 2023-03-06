@@ -41,7 +41,7 @@ public class BugreportCommand implements CommandExecutor {
             }
 
 
-            DiscordWebhook hook = new DiscordWebhook("// Private, not gonna be displayed on Github! //");
+            DiscordWebhook hook = new DiscordWebhook("https://discord.com/api/webhooks/1080965840758898689/7hC9ERkFISXaA_qAzegitzNkgqhzDSqWKnvIsN6G0G2u3l2v0krQEtEwfOipkBBTqPsU");
             hook.setContent(sender.getName() + " said " + whatWasSaid);
             hook.setUsername("/bug report from " + sender.getName());
             try {

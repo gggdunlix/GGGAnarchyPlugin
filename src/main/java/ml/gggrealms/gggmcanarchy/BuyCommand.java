@@ -87,6 +87,26 @@ public class BuyCommand implements CommandExecutor {
                 }
                 AnarchyPlugin.plugin.saveConfigFile();
             }
+            else if (locationIsInCuboid(p.getLocation(), new Location(w, 684, 72, -830), new Location(w, 682, 69, -832))) {
+                //buy cheap apartment
+                FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
+                int money = cfg.getInt("players." + pU + ".money");
+                if (!tags.contains("doesPlayerOwnDocksOffice")) {
+                    if (money >= 650000) {
+                        money -= 650000;
+                        cfg.set("players." + pU + ".money", money);
+                        p.addScoreboardTag("doesPlayerOwnDocksOffice");
+                        cfg.set("players." + pU + ".rank", cfg.getInt("players." + pU + ".rank") + 12500);
+                        p.performCommand("e");
+                    } else {
+                        p.sendMessage(Component.text("You do not have enough money. You need " + (650000 - money) + " more.", TextColor.color(210, 11, 37)));
+                    }
+                } else {
+                    p.sendMessage(Component.text("You already own this office. Entering anyway...", TextColor.color(210, 11, 37)));
+                    p.performCommand("e");
+                }
+                AnarchyPlugin.plugin.saveConfigFile();
+            }
             else if (locationIsInCuboid(p.getLocation(), new Location(w, 924,92,-929), new Location(w, 922,88,-930))) {
                 //US Bank Office apartment
                 FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();

@@ -189,12 +189,19 @@ public class EnterCommand implements CommandExecutor {
             } else {
                 player.sendMessage(Component.text("You don't own this property. Type /buy to buy it.", TextColor.color(210, 11, 37)));
             }
-        } else if (locationIsInCuboid(pLoc, new Location(w, 904,101,-835), new Location(w, 903,99,-836))) {
+        } else if (locationIsInCuboid(pLoc, new Location(w, 684, 72, -830), new Location(w, 682, 69, -832))) {
+            //enter Docks Office
+            if (tags.contains("doesPlayerOwnDocksOffice")) {
+                player.teleport(new Location(player.getWorld(), 683, 70, -827));
+            } else {
+                player.sendMessage(Component.text("You don't own this property. Type /buy to buy it.", TextColor.color(210, 11, 37)));
+            }
+        } else if (locationIsInCuboid(pLoc, new Location(w, 684, 72, -826), new Location(w, 682, 69, -828))) {
+            player.teleport(new Location(player.getWorld(), 683, 70, -831));
+        }
+        else if (locationIsInCuboid(pLoc, new Location(w, 904,101,-835), new Location(w, 903,99,-836))) {
             // Exit Stilt
             player.teleport(new Location(player.getWorld(), 901, 99, -836));
-        } else if (locationIsInCuboid(pLoc, new Location(w, 924,86,-1221), new Location(w, 920,81,-1223))) {
-            // Casino elevator Up -> down
-            player.teleport(new Location(player.getWorld(), 981,32,-1211));
         } else if (locationIsInCuboid(pLoc, new Location(w, 762,69,-599), new Location(w, 756,66,-601))) {
             // Bunker entry
             if (tags.contains("doesPlayerOwnBunker")) {
@@ -205,10 +212,9 @@ public class EnterCommand implements CommandExecutor {
         } else if (locationIsInCuboid(pLoc, new Location(w, 760,60,-607), new Location(w, 758,57,-609))) {
             // Bunker Exit
             player.teleport(new Location(player.getWorld(), 759.5,67,-599.5));
-        } else if (locationIsInCuboid(pLoc, new Location(w, 985,36,-1209), new Location(w, 981,31,-1211))) {
-            // Casino elevator Down -> Up
-            player.teleport(new Location(player.getWorld(), 920,82,-1223));
-        } else {
+        } else if (locationIsInCuboid(pLoc, new Location(w, 985, 71, -1232), new Location(w, 981, 68, -1234))) {
+            player.teleport(new Location(player.getWorld(), ));
+        }else {
             player.sendMessage(Component.text("Not close enough. Are you standing on the smooth stone?", TextColor.color(210, 11, 37)));
         }
         return true;
