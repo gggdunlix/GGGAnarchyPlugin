@@ -1,5 +1,12 @@
 package ml.gggrealms.gggmcanarchy;
-
+/*
+Changes in current version so far:
+add party system
+add teleports for casino elevator
+add /plist
+add Docks Office
+Changed Rank colors
+*/
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import com.google.common.collect.Lists;
 import com.sun.tools.javac.Main;
@@ -172,10 +179,9 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
             Boolean autospawnOn = false;
             int autospawnRate = customConfig.getInt("players." + pUUID + ".autospawnRate");
 
-            if (customConfig.getBoolean("players." + pUUID + ".autospawn")) {
+            if (customConfig.getBoolean("players." + pUUID + ".autospawn", false)) {
                 joinedP.sendMessage("Automatically spawning as default in " + customConfig.getInt("players." + pUUID + ".autospawnRate"));
                 new BukkitRunnable() {
-
                     @Override
                     public void run() {
                         if (joinedP.getScoreboardTags().contains("isPlayerInHub")) {
