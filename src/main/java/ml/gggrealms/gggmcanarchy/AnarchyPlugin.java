@@ -86,6 +86,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         this.getCommand("safe").setExecutor(new SafeCommand());
         this.getCommand("safe").setTabCompleter(new SafeTabCompleter());
         this.getCommand("givemoney").setExecutor(new GiveMoneyCommand());
+        this.getCommand("plist").setExecutor(new PListCommand());
         this.getCommand("autospawn").setExecutor(new AutospawnCommand());
         this.getCommand("autospawn").setTabCompleter(new AutospawnTabCompleter());
         this.getCommand("class").setExecutor(new ClassChoose());
