@@ -41,7 +41,7 @@ public class BugreportCommand implements CommandExecutor {
             }
 
 
-            DiscordWebhook hook = new DiscordWebhook("// Hidden from GitHub //");
+            DiscordWebhook hook = new DiscordWebhook("//Hidden from Github//");
             hook.setContent(sender.getName() + " said " + whatWasSaid);
             hook.setUsername("/bug report from " + sender.getName());
             try {
