@@ -90,6 +90,8 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         this.getCommand("autospawn").setTabCompleter(new AutospawnTabCompleter());
         this.getCommand("class").setExecutor(new ClassChoose());
         this.getCommand("class").setTabCompleter(new classOnTabCompleteClass());
+        this.getCommand("party").setExecutor(new PartyCommand());
+        this.getCommand("party").setTabCompleter(new PartyCommandTab());
 
 
         Bukkit.getServer().getConsoleSender().sendMessage("Plugin now activated, version 0.0.1");
