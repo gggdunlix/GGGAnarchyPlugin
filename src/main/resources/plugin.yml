@@ -66,4 +66,7 @@ commands:
     description: "Opens the weapons/items stash inside properties."
   editcfg:
     permission: op
-
+  plist:
+    description: "Lists online players."
+    aliases:
+      - "players"
