@@ -41,16 +41,19 @@ public class PartyCommand implements CommandExecutor {
             }
         } else if (args[0].equals("list")) {
             if (currentParty != -1) {
+                sender.sendMessage(Component.text("List of players in your party:", TextColor.color(137, 91, 255)).append(Component.text("", TextColor.color(255, 255, 255))));
                 Collection<Player> serverPlayers = (Collection<Player>) Bukkit.getOnlinePlayers();
                 for (Player player : serverPlayers) {
                     String name = player.getName();
                     UUID pUUID = player.identity().uuid();
                     Location pLoc = player.getLocation();
-                    String locString = "(" + pLoc.blockX() + ", " + pLoc.blockY() + ", " + pLoc.blockZ() + ")";
-                    sender.sendMessage(Component.text(name + ": ", TextColor.color(91, 139, 255)).append(Component.text("", TextColor.color(255, 255, 255))));
-                    sender.sendMessage(Component.text("|  -> Location: ", TextColor.color(91, 139, 255)).append(Component.text(locString, TextColor.color(255, 255, 255))));
-                    sender.sendMessage(Component.text("|  -> Faction: ", TextColor.color(91, 139, 255)).append(Component.text(AnarchyPlugin.plugin.getFaction(player), TextColor.color(255, 255, 255))));
-                    sender.sendMessage(Component.text("|  -> Rank: ", TextColor.color(91, 139, 255)).append(Component.text(AnarchyPlugin.plugin.getRank(player), TextColor.color(255, 255, 255))));
+                    if (cfg.getInt("players." + pUUID + ".party", -1) == currentParty && cfg.getInt("players." + pUUID + ".party", -1) != -1) {
+                        String locString = "(" + pLoc.blockX() + ", " + pLoc.blockY() + ", " + pLoc.blockZ() + ")";
+                        sender.sendMessage(Component.text(name + ": ", TextColor.color(91, 139, 255)).append(Component.text("", TextColor.color(255, 255, 255))));
+                        sender.sendMessage(Component.text("|  -> Location: ", TextColor.color(91, 139, 255)).append(Component.text(locString, TextColor.color(255, 255, 255))));
+                        sender.sendMessage(Component.text("|  -> Faction: ", TextColor.color(91, 139, 255)).append(Component.text(AnarchyPlugin.plugin.getFaction(player), TextColor.color(255, 255, 255))));
+                        sender.sendMessage(Component.text("|  -> Rank: ", TextColor.color(91, 139, 255)).append(Component.text(AnarchyPlugin.plugin.getRank(player), TextColor.color(255, 255, 255))));
+                    }
                 }
             } else {
                 sender.sendMessage(Component.text("You are not in a party.", TextColor.color(210, 11, 37)));
