@@ -70,6 +70,10 @@ public class ClassChoose implements CommandExecutor {
         if (tags.contains("doesPlayerOwnCasino")) {
             doesPlayerOwnCasino = true;
         }
+        Boolean doesPlayerOwnDocksOffice = false;
+        if (tags.contains("doesPlayerOwnDocksOffice")) {
+            doesPlayerOwnCasino = true;
+        }
 
         if (isPlayerInHub) {
             if (args.length == 0) {
@@ -80,6 +84,13 @@ public class ClassChoose implements CommandExecutor {
                 if (!doesPlayerOwnUSBankOffice) {
                     player.sendMessage(Component.text("bankrobber: ", TextColor.color(255,255,12)).append(Component.text("Spawns prepared for a bank robbery. - REQUIRES PROPERTY: US Bank Office", TextColor.color(210, 11, 37))));
 
+                }
+                if (!doesPlayerOwnDocksOffice) {
+                    player.sendMessage(Component.text("boater: ", TextColor.color(255,255,12)).append(Component.text("Spawns near docks, and can spawn a boat. - REQUIRES PROPERTY: Docks Office", TextColor.color(210, 11, 37))));
+
+                }
+                if (doesPlayerOwnDocksOffice) {
+                    player.sendMessage(Component.text("boater: ", TextColor.color(255,255,12)).append(Component.text("Spawns near docks, and can spawn a boat.", TextColor.color(255,255,255))));
                 }
                 if (doesPlayerOwnFarm) {
                     player.sendMessage(Component.text("horseman: ", TextColor.color(255,255,12)).append(Component.text("Spawns with a horse at a farm.", TextColor.color(255,255,255))));
@@ -183,6 +194,24 @@ public class ClassChoose implements CommandExecutor {
                     player.addScoreboardTag("classHorseman");
                 } else {
                     player.sendMessage(Component.text("You need to own 'farm' to spawn as ", TextColor.color(210, 11, 37)).append(Component.text("horseman", TextColor.color(13, 25, 200))));
+                }
+
+            } else if (args[0].equals("boater")) {
+                if (doesPlayerOwnDocksOffice) {
+                    player.sendMessage(Component.text("You spawned as ").append(Component.text("horseman", TextColor.color(13, 25, 200))));
+                    ArrayList<Location> locations = new ArrayList<Location>();
+                    locations.add(new Location(player.getWorld(), 716, 63, -862));
+                    locations.add(new Location(player.getWorld(), 650, 69, -863));
+                    locations.add(new Location(player.getWorld(), 729, 64, -796));
+                    locations.add(new Location(player.getWorld(), 759, 63, -751));
+                    int random_int = (int) Math.floor(Math.random() * ((locations.size() - 1) - 0 + 1) + 0);
+                    Location chosenLoc = locations.get(random_int);
+                    player.teleport(chosenLoc);
+                    player.removeScoreboardTag("isPlayerInHub");
+
+                    player.addScoreboardTag("classBoater");
+                } else {
+                    player.sendMessage(Component.text("You need to own 'Docks Office' to spawn as ", TextColor.color(210, 11, 37)).append(Component.text("boater", TextColor.color(13, 25, 200))));
                 }
 
             } else if (args[0].equals("dev")) {

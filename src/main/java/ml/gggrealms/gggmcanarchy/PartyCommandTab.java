@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class PartyTabCommand implements TabCompleter {
+public class PartyCommandTab implements TabCompleter {
     private static final String[] COMMANDS = { "leave", "list"};
     //create a static array of values
 

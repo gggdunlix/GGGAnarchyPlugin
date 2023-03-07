@@ -70,3 +70,12 @@ commands:
     description: "Lists online players."
     aliases:
       - "players"
+      - "playerlist"
+  party:
+    description: "shows commands for managing player parties."
+  propertyability:
+    description: "Allows you to perform the special ability for certain properties."
+    aliases:
+      - "pa"
+      - "propabil"
+      - "pability"

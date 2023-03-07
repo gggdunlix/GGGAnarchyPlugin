@@ -1,11 +1,7 @@
 package ml.gggrealms.gggmcanarchy;
 /*
 Changes in current version so far:
-add party system
-add teleports for casino elevator
-add /plist
-add Docks Office
-Changed Rank colors
+
 */
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import com.google.common.collect.Lists;
@@ -135,7 +131,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         }
         customConfig.set("players." + pUUID+ ".prevName", joinedP.getName());
 
-        if (customConfig.get("players." + pUUID + "autospawn") == null) {
+        if (customConfig.get("players." + pUUID + ".autospawn") == null) {
             customConfig.set("players." + pUUID + ".autospawn", true);
             customConfig.set("players." + pUUID + ".autospawnRate", 10);
         }
@@ -222,6 +218,11 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
                         joinedP.setFoodLevel(8);
                     }
                 }
+                if (joinedP.getScoreboardTags().contains("isPlayerInHub")) {
+                    joinedP.setInvisible(true);
+                } else {
+                    joinedP.setInvisible(false);
+                }
                 FileConfiguration cfg = getConfigFile();
                 board.updateLine(0, "Faction: " + ChatColor.UNDERLINE + getFaction(joinedP));
                 board.updateLine(1, "Money: " + ChatColor.GREEN + "$" + ChatColor.WHITE + cfg.getInt("players." + pUUID + ".money"));
@@ -286,7 +287,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         int autospawnRate = customConfig.getInt("players." + pUUID + ".autospawnRate");
 
         if (customConfig.getBoolean("players." + pUUID + ".autospawn")) {
-            spawnedPlayer.sendMessage("Automatically spawning as default in " + customConfig.getInt("players." + pUUID + ".autospawnRate" + " seconds. (/as)"));
+            spawnedPlayer.sendMessage("Automatically spawning as default in " + autospawnRate + " seconds. (/as)");
             new BukkitRunnable() {
 
                 @Override
@@ -369,6 +370,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         Player p = (Player) event.getPlayer();
         UUID pU = p.identity().uuid();
         if (inventoryView.title().equals("Cheap Apartment Stash")) {
+            p.sendMessage("saved stash.");
             FileConfiguration cfg = getConfigFile();
             cfg.set("stashes." + pU + ".cheapAptStash", inventoryView.getTopInventory());
         }
@@ -393,10 +395,12 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         UUID recipUUID = damager.getUniqueId();
         FileConfiguration cfg = getConfigFile();
         int damagerParty = cfg.getInt("players." + damagerUUID + ".party", -1);
-        int recipParty = cfg.getInt("players." + damagerUUID + ".party", -1);
+        int recipParty = cfg.getInt("players." + recipUUID + ".party", -1);
+        if (recip.getScoreboardTags().contains("isPlayerInHub")) {
+            event.setCancelled(true);
+        }
         if (damagerParty == recipParty && damagerParty != -1) {
             event.setCancelled(true);
-        } else {
             damager.sendMessage(Component.text("Blocked friendly fire.", TextColor.color(210, 11, 37)));
         }
     }

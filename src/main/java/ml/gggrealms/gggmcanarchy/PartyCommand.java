@@ -21,7 +21,7 @@ public class PartyCommand implements CommandExecutor {
         FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
         Player p = (Player) sender;
         UUID pU = p.identity().uuid();
-        int currentParty = cfg.getInt("players." + pU + ".party");
+        int currentParty = cfg.getInt("players." + pU + ".party", -1);
         if (args.length == 0) {
             sender.sendMessage(Component.text("----- ---- Party System ---- -----", TextColor.color(91, 139, 255)));
             sender.sendMessage(Component.text("/party <party number> ", TextColor.color(91, 139, 255)).append(Component.text("- Use to join any party, regardless of whether it was created or not. Using a non-existent party automatically creates a new one.", TextColor.color(255,255,255))));
@@ -34,7 +34,7 @@ public class PartyCommand implements CommandExecutor {
 
         } else if (args[0].equals("leave")) {
             if (currentParty != -1) {
-                cfg.set("players." + pU + ".party", 0);
+                cfg.set("players." + pU + ".party", -1);
                 sender.sendMessage("Left party.");
             } else {
                 sender.sendMessage(Component.text("You are not in a party.", TextColor.color(210, 11, 37)));

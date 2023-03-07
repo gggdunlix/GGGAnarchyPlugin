@@ -493,6 +493,99 @@ public class SafeCommand implements CommandExecutor {
             } else {
                 player.sendMessage(Component.text("You don't own this bunker.", TextColor.color(210, 11, 37)));
             }
+        } else if (locationIsInCuboid(playerLoc, new Location(w,762, 16, -612), new Location(w, 756, 12, -615)))
+        {
+            if (tags.contains("doesPlayerOwnDocksOffice")) {
+                if (args.length == 0) {
+                    //US Bank safe:
+                    FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
+                    cfg.set("players." + pUUID + ".docksOfficeBalance", cfg.getInt("players." + pUUID + ".docksOfficeBalance") + 0);
+                    player.sendMessage("------Docks Office------");
+                    player.sendMessage(Component.text("Current Balance: ").append(Component.text("$", TextColor.color(84, 255, 88))).append(Component.text(cfg.getInt("players." + pUUID + ".docksOfficeBalance"))).append(Component.text(" / $1250000")));
+                    player.sendMessage("Deposit money: /safe depo <int amount>");
+                    player.sendMessage("Withdraw money: /safe with <int amount>");
+                    player.sendMessage(Component.text("Sell office: /safe sell", TextColor.color(255, 205, 44)));
+                } else if (args[0].equals("depo")) {
+                    FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
+                    int money = cfg.getInt("players." + pUUID + ".money");
+                    int amtToDepo = money;
+                    if (args.length == 2) {
+                        amtToDepo = Integer.parseInt(args[1]);
+                    }
+                    int docksOfficeBalance = cfg.getInt("players." + pUUID + ".docksOfficeBalance");
+                    if (amtToDepo >= 0) {
+                        if (docksOfficeBalance < 1250000) {
+                            if (amtToDepo > money) {
+                                amtToDepo = money;
+                            }
+                            if (amtToDepo + docksOfficeBalance > 1250000) {
+                                int maxAmtToDepo = 1250000 - docksOfficeBalance;
+                                money -= maxAmtToDepo;
+                                docksOfficeBalance += maxAmtToDepo;
+                            } else {
+                                money -= amtToDepo;
+                                docksOfficeBalance += amtToDepo;
+                            }
+                            player.performCommand("safe");
+                        } else {
+                            player.sendMessage(Component.text("Your balance is full at the Docks Office ($1250000).", TextColor.color(210, 11, 37)));
+                        }
+                    } else {
+                        player.sendMessage(Component.text("Deposit a positive amount of money.", TextColor.color(210, 11, 37)));
+                    }
+                    cfg.set("players." + pUUID + ".money", money);
+                    cfg.set("players." + pUUID + ".docksOfficeBalance", docksOfficeBalance);
+                    player.performCommand("safe");
+                    AnarchyPlugin.plugin.saveConfigFile();
+                } else if (args[0].equals("with")) {
+                    FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
+                    int money = cfg.getInt("players." + pUUID + ".money");
+                    int docksOfficeBalance = cfg.getInt("players." + pUUID + ".docksOfficeBalance");
+                    int amtToWith = docksOfficeBalance;
+                    if (args.length == 2) {
+                        amtToWith = Integer.parseInt(args[1]);
+                    }
+                    if (amtToWith >= 0) {
+                        if (amtToWith > docksOfficeBalance) {
+                            money += docksOfficeBalance;
+                            docksOfficeBalance = 0;
+                        } else {
+                            docksOfficeBalance -= amtToWith;
+                            money += amtToWith;
+                        }
+                        cfg.set("players." + pUUID + ".money", money);
+                        cfg.set("players." + pUUID + ".docksOfficeBalance", docksOfficeBalance);
+                        AnarchyPlugin.plugin.saveConfigFile();
+                        player.performCommand("safe");
+                    } else {
+                        player.sendMessage(Component.text("Withdraw a positive amount of money.", TextColor.color(210, 11, 37)));
+                    }
+                } else if (args[0].equals("sell")) {
+                    if (args.length == 1) {
+                        player.sendMessage(Component.text("Are you sure you want to sell this office? You won't get the items in the stash back. You will keep the the amount the office cost and what was in the safe. If you are sure, please type /safe sell yes", TextColor.color(210, 11, 37)));
+                    } else if (args.length == 2) {
+                        if (args[1].equals("yes")) {
+                            player.sendMessage(Component.text("Sold Docks Office.", TextColor.color(210, 11, 37)));
+                            player.removeScoreboardTag("doesPlayerOwnDocksOffice");
+                            FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
+                            int money = cfg.getInt("players." + pUUID + ".money");
+                            int safeMoney = cfg.getInt("players." + pUUID + ".docksOfficeBalance");
+                            cfg.set("players." + pUUID + ".docksOfficeBalance", 0);
+                            money += 650000;
+                            money += safeMoney;
+                            cfg.set("players." + pUUID + ".rank", cfg.getInt("players." + pUUID + ".rank") - 35000);
+                            cfg.set("players." + pUUID + ".money", money);
+                            AnarchyPlugin.plugin.saveConfigFile();
+                        } else {
+                            player.sendMessage(Component.text("Wrong usage, try /safe maybe?", TextColor.color(210, 11, 37)));
+                        }
+                    } else {
+                        player.sendMessage(Component.text("Wrong usage, try /safe maybe?", TextColor.color(210, 11, 37)));
+                    }
+                }
+            } else {
+                player.sendMessage(Component.text("You don't own this office.", TextColor.color(210, 11, 37)));
+            }
         } else {
             player.sendMessage(Component.text("Not close enough to a bank/safe. Are you standing on the smooth stone?", TextColor.color(210, 11, 37)));
         }

@@ -212,9 +212,19 @@ public class EnterCommand implements CommandExecutor {
         } else if (locationIsInCuboid(pLoc, new Location(w, 760,60,-607), new Location(w, 758,57,-609))) {
             // Bunker Exit
             player.teleport(new Location(player.getWorld(), 759.5,67,-599.5));
-        } else if (locationIsInCuboid(pLoc, new Location(w, 985, 71, -1232), new Location(w, 981, 68, -1234))) {
-            player.teleport(new Location(player.getWorld(), ));
-        }else {
+        } else if (locationIsInCuboid(pLoc, new Location(w, 985, 71, -1232), new Location(w, 981, 68, -1234)) || locationIsInCuboid(pLoc, new Location(w, 985, 71, -1209), new Location(w, 981, 68, -1211))) {
+            // casino elevator left/or/right > bottom
+            player.teleport(new Location(player.getWorld(), 983,32,-1210));
+        } else if (locationIsInCuboid(pLoc, new Location(w, 985, 34, -1209), new Location(w, 981, 31, -1211))) {
+            // casino elevator bottom > left/or/right
+            int random = (int) Math.floor(Math.random() *(1 - 0 + 1) + 0);
+            if (random == 0) {
+                player.teleport(new Location(player.getWorld(), 983,69,-1233));
+            } else {
+                player.teleport(new Location(player.getWorld(), 983,69,-1210));
+            }
+            player.teleport(new Location(player.getWorld(), 983,32,-1210));
+        } else {
             player.sendMessage(Component.text("Not close enough. Are you standing on the smooth stone?", TextColor.color(210, 11, 37)));
         }
         return true;

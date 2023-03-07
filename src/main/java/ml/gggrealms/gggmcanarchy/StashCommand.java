@@ -33,7 +33,7 @@ public class StashCommand implements CommandExecutor {
             if (tags.contains("doesPlayerOwnCheapApt")) {
                 String cheapAptStash = cfg.getString("stashes." + pU + ".cheapAptStash");
                 Inventory hopperStash = Bukkit.createInventory(null, InventoryType.HOPPER, "Cheap Apartment Stash");
-                hopperStash = cfg.getObject("stashes." + pU + "cheapAptStash", hopperStash.getClass());
+                hopperStash = cfg.getObject("stashes." + pU + ".cheapAptStash", hopperStash.getClass());
                 if (hopperStash == null) {
                     hopperStash = Bukkit.createInventory(null, InventoryType.HOPPER, "Cheap Apartment Stash");
                 }

@@ -88,7 +88,7 @@ public class BuyCommand implements CommandExecutor {
                 AnarchyPlugin.plugin.saveConfigFile();
             }
             else if (locationIsInCuboid(p.getLocation(), new Location(w, 684, 72, -830), new Location(w, 682, 69, -832))) {
-                //buy cheap apartment
+                //buy Docks office
                 FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
                 int money = cfg.getInt("players." + pU + ".money");
                 if (!tags.contains("doesPlayerOwnDocksOffice")) {
@@ -96,7 +96,7 @@ public class BuyCommand implements CommandExecutor {
                         money -= 650000;
                         cfg.set("players." + pU + ".money", money);
                         p.addScoreboardTag("doesPlayerOwnDocksOffice");
-                        cfg.set("players." + pU + ".rank", cfg.getInt("players." + pU + ".rank") + 12500);
+                        cfg.set("players." + pU + ".rank", cfg.getInt("players." + pU + ".rank") + 35000);
                         p.performCommand("e");
                     } else {
                         p.sendMessage(Component.text("You do not have enough money. You need " + (650000 - money) + " more.", TextColor.color(210, 11, 37)));
