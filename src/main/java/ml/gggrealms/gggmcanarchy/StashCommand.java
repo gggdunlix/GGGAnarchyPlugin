@@ -44,7 +44,7 @@ public class StashCommand implements CommandExecutor {
         else if (locationIsInCuboid(pLoc, new Location(w, 927, 92, -930), new Location(w, 926, 88, -934))) {
             if (tags.contains("doesPlayerOwnUSBankOffice")) {
                 String USBankOfficeStash = cfg.getString("stashes." + pU + ".USBankOfficeStash");
-                DoubleChestInventory chest2Stash = (DoubleChestInventory) Bukkit.createInventory(null, 54, "US Bank Office Stash");
+                Inventory chest2Stash = Bukkit.createInventory(null, 54, "US Bank Office Stash");
 
                 chest2Stash = cfg.getObject("stashes." + pU + ".cheapAptStash", chest2Stash.getClass());
 
