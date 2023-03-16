@@ -96,6 +96,8 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         this.getCommand("class").setTabCompleter(new classOnTabCompleteClass());
         this.getCommand("party").setExecutor(new PartyCommand());
         this.getCommand("party").setTabCompleter(new PartyCommandTab());
+        this.getCommand("propertyability").setExecutor(new PropertyAbilityCommand());
+        this.getCommand("propertyability").setTabCompleter(new PropertyAbilityCommandTab());
 
 
         Bukkit.getServer().getConsoleSender().sendMessage("Plugin now activated, version 0.0.1");
@@ -108,12 +110,10 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         //LET THEM BUILD!
         Player joinedP = event.getPlayer();
 
-
-
-        joinedP.sendMessage(Component.text("Hello, " + event.getPlayer().getName() + "!"));
-        joinedP.sendMessage(Component.text("So, What's going on here? \nWell, This is gonna be the start of an anarchy server. But not just any random one, One where players cannot mine or place things, just play the game with mechanics and a gamemode we implement ourselves."));
-        joinedP.sendMessage(Component.text("Right now, we're gonna set you to creative and ask that you start building a city with buildings that would have a function, like stores, offices, houses, whatever you feel should fit. Eventually, the server will be playable and very fun.\nThanks, GGGDunlix & GGGCarl."));
-        joinedP.setGameMode(GameMode.CREATIVE);
+        //joinedP.sendMessage(Component.text("Hello, " + event.getPlayer().getName() + "!"));
+        //joinedP.sendMessage(Component.text("So, What's going on here? \nWell, This is gonna be the start of an anarchy server. But not just any random one, One where players cannot mine or place things, just play the game with mechanics and a gamemode we implement ourselves."));
+        //joinedP.sendMessage(Component.text("Right now, we're gonna set you to creative and ask that you start building a city with buildings that would have a function, like stores, offices, houses, whatever you feel should fit. Eventually, the server will be playable and very fun.\nThanks, GGGDunlix & GGGCarl."));
+        if (joinedP.isOp()) joinedP.sendMessage("Ops can spawn as dev class to spawn creative mode.");
         Bukkit.getServer().setSpawnRadius(0);
 
         FileConfiguration customConfig = getConfigFile();
@@ -200,10 +200,19 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
                     int currentCoolNum = cfg.getInt("players." + pUUID + ".riderCooldown");
                     cfg.set("players." + pUUID + ".riderCooldown", currentCoolNum - 1);
                 }
+                if (cfg.getInt("players." + pUUID + ".horsemanCooldown") > 0) {
+                    int currentCoolNum = cfg.getInt("players." + pUUID + ".horsemanCooldown");
+                    cfg.set("players." + pUUID + ".horsemanCooldown", currentCoolNum - 1);
+                }
                 //FARMER Faction and Class Cooldown
                 if (cfg.getInt("players." + pUUID + ".farmerCooldown") > 0) {
                     int currentCoolNum = cfg.getInt("players." + pUUID + ".farmerCooldown");
                     cfg.set("players." + pUUID + ".farmerCooldown", currentCoolNum - 1);
+                }
+                //Boat spawner Cooldown
+                if (cfg.getInt("players." + pUUID + ".boatDelay") > 0) {
+                    int currentCoolNum = cfg.getInt("players." + pUUID + ".boatDelay");
+                    cfg.set("players." + pUUID + ".boatDelay", currentCoolNum - 1);
                 }
                 saveConfigFile();
             }
@@ -238,8 +247,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
                 } else if (ping >= 600) {
                     board.updateLine(2, "Ping: " + ChatColor.DARK_RED + ping + ChatColor.WHITE + "ms");
                 }
-                int rank = cfg.getInt("players." + pUUID + ".rank");
-                board.updateLine(3, getRank(joinedP));
+                board.updateLine(3, "Rank: " + getRank(joinedP));
                 int propCount = getPropCount(joinedP);
                 if (propCount > 3) {
                     board.updateLine(4, "# Props: " + ChatColor.RED + propCount);
@@ -251,11 +259,13 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
     public int getPropCount(Player player) {
         Set<String> tags = player.getScoreboardTags();
         int propertyCount = 0;
+        if (tags.contains("doesPlayerOwnMotel")) propertyCount++;
         if (tags.contains("doesPlayerOwnCheapApt")) propertyCount++;
         if (tags.contains("doesPlayerOwnSmallApt")) propertyCount++;
         if (tags.contains("doesPlayerOwnUSBankOffice")) propertyCount++;
         if (tags.contains("doesPlayerOwnFarm")) propertyCount++;
         if (tags.contains("doesPlayerOwnBunker")) propertyCount++;
+        if (tags.contains("doesPlayerOwnDocksOffice")) propertyCount++;
         return  propertyCount;
     }
 
@@ -266,7 +276,12 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         deadPlayer.removeScoreboardTag("classFarmer");
         deadPlayer.removeScoreboardTag("classDefault");
         deadPlayer.removeScoreboardTag("classRider");
+        deadPlayer.removeScoreboardTag("classHorseman");
+        deadPlayer.removeScoreboardTag("classBoater");
+        deadPlayer.removeScoreboardTag("classThug");
+        deadPlayer.removeScoreboardTag("classCrackhead");
         deadPlayer.removeScoreboardTag("classDev");
+        deadPlayer.removeScoreboardTag("classFisherman");
 
         deadPlayer.removeScoreboardTag("factionFarmer");
         deadPlayer.removeScoreboardTag("factionAgent");
@@ -280,14 +295,14 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         Player spawnedPlayer = event.getPlayer();
         spawnedPlayer.teleport(new Location(spawnedPlayer.getWorld(), 818, -13, -1031, -90, 0));
         spawnedPlayer.addScoreboardTag("isPlayerInHub");
-
+        spawnedPlayer.setGameMode(GameMode.ADVENTURE);
         UUID pUUID = spawnedPlayer.identity().uuid();
         FileConfiguration customConfig = getConfigFile();
         Boolean autospawnOn = false;
         int autospawnRate = customConfig.getInt("players." + pUUID + ".autospawnRate");
 
         if (customConfig.getBoolean("players." + pUUID + ".autospawn")) {
-            spawnedPlayer.sendMessage("Automatically spawning as default in " + autospawnRate + " seconds. (/as)");
+            spawnedPlayer.sendMessage("Automatically spawning as default in " + autospawnRate + " seconds. (/as to change)");
             new BukkitRunnable() {
 
                 @Override
@@ -343,6 +358,8 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
             toReturn = ChatColor.GREEN + Integer.toString(rank);
         } else if (rank < 100000){
             toReturn = ChatColor.AQUA + Integer.toString(rank);
+        } else if (rank >= 100000) {
+            toReturn = ChatColor.YELLOW + Integer.toString(rank);
         }
         return toReturn;
     }
@@ -369,21 +386,30 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         InventoryView inventoryView = event.getView();
         Player p = (Player) event.getPlayer();
         UUID pU = p.identity().uuid();
-        if (inventoryView.title().equals("Cheap Apartment Stash")) {
+        if (inventoryView.getTitle().equals("Cheap Apartment Stash")) {
             p.sendMessage("saved stash.");
             FileConfiguration cfg = getConfigFile();
             cfg.set("stashes." + pU + ".cheapAptStash", inventoryView.getTopInventory());
+        }
+        if (inventoryView.getTitle().equals("US Bank Office Stash")) {
+            p.sendMessage("saved stash.");
+            FileConfiguration cfg = getConfigFile();
+            cfg.set("stashes." + pU + ".USBankOfficeStash", inventoryView.getTopInventory());
         }
     }
     @EventHandler
     public void onCraft(CraftItemEvent event) {
         Player p = (Player) event.getWhoClicked();
+        p.sendMessage("clicked");
         if (getFaction(p).equals("farmer")) {
-            if (event.getCurrentItem().getType().equals(Material.PUMPKIN) || event.getCurrentItem().getType().equals(Material.PUMPKIN)) {
-                ItemStack res = event.getInventory().getResult();
+            p.sendMessage("isFarmer");
+            if (event.getRecipe().getResult().getType().toString().equals("PUMPKIN_SEEDS") || event.getRecipe().getResult().getType().toString().equals("MELON_SEEDS")) {
+                p.sendMessage("correct item");
+                ItemStack res = event.getRecipe().getResult();
                 ItemMeta resultMeta = res.getItemMeta();
                 resultMeta.setPlaceableKeys(Lists.newArrayList(Material.FARMLAND.getKey()));
                 res.setItemMeta(resultMeta);
+                p.sendMessage("item complete");
             }
         }
     }

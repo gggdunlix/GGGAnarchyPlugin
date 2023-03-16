@@ -11,10 +11,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryType;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
-import org.bukkit.inventory.InventoryView;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.*;
 import org.jetbrains.annotations.NotNull;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -34,12 +31,43 @@ public class StashCommand implements CommandExecutor {
                 String cheapAptStash = cfg.getString("stashes." + pU + ".cheapAptStash");
                 Inventory hopperStash = Bukkit.createInventory(null, InventoryType.HOPPER, "Cheap Apartment Stash");
                 hopperStash = cfg.getObject("stashes." + pU + ".cheapAptStash", hopperStash.getClass());
+
                 if (hopperStash == null) {
                     hopperStash = Bukkit.createInventory(null, InventoryType.HOPPER, "Cheap Apartment Stash");
                 }
                 hopperStash.addItem(new ItemStack(Material.AIR));
-                p.openInventory(hopperStash);
+                InventoryView view = p.openInventory(hopperStash);
+            } else {
+                p.sendMessage(Component.text("You don't own this property.", TextColor.color(210, 11, 37)));
+            }
+        }
+        else if (locationIsInCuboid(pLoc, new Location(w, 927, 92, -930), new Location(w, 926, 88, -934))) {
+            if (tags.contains("doesPlayerOwnUSBankOffice")) {
+                String USBankOfficeStash = cfg.getString("stashes." + pU + ".USBankOfficeStash");
+                DoubleChestInventory chest2Stash = (DoubleChestInventory) Bukkit.createInventory(null, 54, "US Bank Office Stash");
 
+                chest2Stash = cfg.getObject("stashes." + pU + ".cheapAptStash", chest2Stash.getClass());
+
+                if (chest2Stash == null) {
+                    chest2Stash = (DoubleChestInventory) Bukkit.createInventory(null, InventoryType.CHEST, "US Bank Office Stash");
+                }
+                chest2Stash.addItem(new ItemStack(Material.AIR));
+                InventoryView view = p.openInventory(chest2Stash);
+            } else {
+                p.sendMessage(Component.text("You don't own this property.", TextColor.color(210, 11, 37)));
+            }
+        }
+        else if (locationIsInCuboid(pLoc, new Location(w, 1044, 73, -694), new Location(w, 1042, 70, -697))) {
+            if (tags.contains("doesPlayerOwnFarm")) {
+                String farmStash = cfg.getString("stashes." + pU + ".farmStash");
+                Inventory chestStash = Bukkit.createInventory(null, InventoryType.SHULKER_BOX, "Farm Stash");
+                chestStash = cfg.getObject("stashes." + pU + ".chestStash", chestStash.getClass());
+
+                if (chestStash == null) {
+                    chestStash = Bukkit.createInventory(null, InventoryType.SHULKER_BOX, "Farm Stash");
+                }
+                chestStash.addItem(new ItemStack(Material.AIR));
+                InventoryView view = p.openInventory(chestStash);
             } else {
                 p.sendMessage(Component.text("You don't own this property.", TextColor.color(210, 11, 37)));
             }

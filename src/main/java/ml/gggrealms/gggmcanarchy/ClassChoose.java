@@ -72,7 +72,7 @@ public class ClassChoose implements CommandExecutor {
         }
         Boolean doesPlayerOwnDocksOffice = false;
         if (tags.contains("doesPlayerOwnDocksOffice")) {
-            doesPlayerOwnCasino = true;
+            doesPlayerOwnDocksOffice = true;
         }
 
         if (isPlayerInHub) {
@@ -89,8 +89,16 @@ public class ClassChoose implements CommandExecutor {
                     player.sendMessage(Component.text("boater: ", TextColor.color(255,255,12)).append(Component.text("Spawns near docks, and can spawn a boat. - REQUIRES PROPERTY: Docks Office", TextColor.color(210, 11, 37))));
 
                 }
+                if (!doesPlayerOwnDocksOffice) {
+                    player.sendMessage(Component.text("fisherman: ", TextColor.color(255,255,12)).append(Component.text("Spawns near docks, and can go fishing for money. - REQUIRES PROPERTY: Docks Office", TextColor.color(210, 11, 37))));
+
+                }
+
                 if (doesPlayerOwnDocksOffice) {
                     player.sendMessage(Component.text("boater: ", TextColor.color(255,255,12)).append(Component.text("Spawns near docks, and can spawn a boat.", TextColor.color(255,255,255))));
+                }
+                if (doesPlayerOwnDocksOffice) {
+                    player.sendMessage(Component.text("fisherman: ", TextColor.color(255,255,12)).append(Component.text("Spawns near docks, and can go fishing for money. ($5,000 withdrawal on spawn)", TextColor.color(255,255,255))));
                 }
                 if (doesPlayerOwnFarm) {
                     player.sendMessage(Component.text("horseman: ", TextColor.color(255,255,12)).append(Component.text("Spawns with a horse at a farm.", TextColor.color(255,255,255))));
@@ -101,7 +109,6 @@ public class ClassChoose implements CommandExecutor {
                 if (doesPlayerOwnCheapApt) {
                     player.sendMessage(Component.text("thug: ", TextColor.color(255,255,12)).append(Component.text("Spawns as a common thug with a Glock 19.", TextColor.color(255,255,255))));
                 }
-                player.sendMessage(Component.text("farmer: ", TextColor.color(255,255,12)).append(Component.text("Spawns with a farming tool near a farm.", TextColor.color(255,255,255))));
                 player.sendMessage(Component.text("farmer: ", TextColor.color(255,255,12)).append(Component.text("Spawns with a farming tool near a farm.", TextColor.color(255,255,255))));
                 // player.sendMessage(Component.text("rider: ", TextColor.color(255,255,12)).append(Component.text("Spawns with no items and a slow horse at a random location.", TextColor.color(255,255,255))));
                 player.sendMessage(Component.text("default: ", TextColor.color(255,255,12)).append(Component.text("Spawns with no items at a random location.", TextColor.color(255,255,255))));
@@ -176,12 +183,35 @@ public class ClassChoose implements CommandExecutor {
                     player.sendMessage(Component.text("You must wait ").append(Component.text(config.getInt("players." + pUUID + ".farmerCooldown") + " seconds", TextColor.color(255, 230, 87))).append(Component.text(" before spawning as this class again.", TextColor.color(255, 255, 255))));
                 }
                 
-            } else if (args[0].equals("horseman")) {
+            } else if (args[0].equals("fisherman")) {
+                if (config.getInt("players." + pUUID + ".fishermanCooldown") <= 0) {
+                    if (config.getInt("players." + pUUID + ".docksOfficeBalance", 0) >= 5000) {
+                        player.sendMessage(Component.text("You spawned as ").append(Component.text("fisherman", TextColor.color(13, 25, 200))));
+                        ArrayList<Location> locations = new ArrayList<Location>();
+                        locations.add(new Location(player.getWorld(), 716, 63, -862));
+                        locations.add(new Location(player.getWorld(), 650, 69, -863));
+                        locations.add(new Location(player.getWorld(), 729, 64, -796));
+                        locations.add(new Location(player.getWorld(), 759, 63, -751));
+                        int random_int = (int) Math.floor(Math.random() * ((locations.size() - 1) - 0 + 1) + 0);
+                        Location chosenLoc = locations.get(random_int);
+                        player.teleport(chosenLoc);
+                        player.removeScoreboardTag("isPlayerInHub");
+                        config.set("players." + pUUID + ".fishermanCooldown", 600);
+                        player.addScoreboardTag("classFisherman");
+                        player.getInventory().addItem(new ItemStack(Material.FISHING_ROD));
+                    } else {
+                        player.sendMessage(Component.text("You need another $").append(Component.text(5000 - config.getInt("players." + pUUID + ".docksOfficeBalance"), TextColor.color(255, 66, 50))).append(Component.text(" in the 'Docks Office Safe' before spawning as this class again.", TextColor.color(255, 255, 255))));
+                    }
+                } else {
+                    player.sendMessage(Component.text("You must wait ").append(Component.text(config.getInt("players." + pUUID + ".fishermanCooldown") + " seconds", TextColor.color(255, 230, 87))).append(Component.text(" before spawning as this class again.", TextColor.color(255, 255, 255))));
+                }
+
+            }else if (args[0].equals("horseman")) {
                 if (doesPlayerOwnFarm) {
                     player.sendMessage(Component.text("You spawned as ").append(Component.text("horseman", TextColor.color(13, 25, 200))));
                     ArrayList<Location> locations = new ArrayList<Location>();
-                    locations.add(new Location(player.getWorld(), 928, 66, -915));
-                    locations.add(new Location(player.getWorld(), 919, 66, -929));
+                    locations.add(new Location(player.getWorld(), 1039, 63, -693));
+                    locations.add(new Location(player.getWorld(), 1049, 63, -679));
                     int random_int = (int) Math.floor(Math.random() * ((locations.size() - 1) - 0 + 1) + 0);
                     Location chosenLoc = locations.get(random_int);
                     player.teleport(chosenLoc);

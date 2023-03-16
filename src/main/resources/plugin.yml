@@ -79,3 +79,10 @@ commands:
       - "pa"
       - "propabil"
       - "pability"
+  specialability:
+    description: "command used to perform your faction's unique ability."
+    aliases:
+      - "spec"
+      - "abil"
+      - "special"
+      - "specabil"

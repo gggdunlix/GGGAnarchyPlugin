@@ -493,11 +493,11 @@ public class SafeCommand implements CommandExecutor {
             } else {
                 player.sendMessage(Component.text("You don't own this bunker.", TextColor.color(210, 11, 37)));
             }
-        } else if (locationIsInCuboid(playerLoc, new Location(w,762, 16, -612), new Location(w, 756, 12, -615)))
+        } else if (locationIsInCuboid(playerLoc, new Location(w,679, 71, -823), new Location(w, 678, 69, -826)))
         {
             if (tags.contains("doesPlayerOwnDocksOffice")) {
                 if (args.length == 0) {
-                    //US Bank safe:
+                    //Docks Office safe:
                     FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
                     cfg.set("players." + pUUID + ".docksOfficeBalance", cfg.getInt("players." + pUUID + ".docksOfficeBalance") + 0);
                     player.sendMessage("------Docks Office------");

@@ -38,6 +38,7 @@ public class JoinCommand implements CommandExecutor {
                     p.addScoreboardTag("factionFarmer");
                     cfg.set("players." + pU + ".farmerCooldown", 600);
                     p.sendMessage("Welcome to the farmers faction. You can use a hoe to create farmland and plant seeds. After you harvest your crops and seeds, you can sell them here for money.");
+                    p.sendMessage(Component.text("Special Ability for farmers faction: ", TextColor.color(255, 113, 63)).append(Component.text("Hunger does not drop below 4 units", TextColor.color(255, 213, 102))));
                     ItemStack wooden_hoe = new ItemStack(Material.WOODEN_HOE);
                     ItemMeta hoe_meta = wooden_hoe.getItemMeta();
                     hoe_meta.setPlaceableKeys(Lists.newArrayList(Material.GRASS_BLOCK.getKey(), Material.DIRT.getKey()));

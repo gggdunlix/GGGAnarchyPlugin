@@ -16,12 +16,15 @@ public class SpecialAbilityCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player p = (Player) sender;
         String faction = AnarchyPlugin.plugin.getFaction(p);
-        if (args.lenght == 0) {
-          if (faction.equals("none") {
-            p.sendMessage("You aren't in a faction, and don't have a special ability") 
-          }
+        if (args.length == 0) {
+            if (faction.equals("none")) {
+                p.sendMessage("You aren't in a faction, and don't have a special ability");
+            } else if (faction.equals("farmer")) {
+                p.sendMessage("Your hunger will not go below 4 units while in the farmer faction.");
+            }
         } else {
-          p.sendMessage("Wrong syntax. Just do /abil without any arguments.")
+            p.sendMessage("Wrong syntax. Just do /abil without any arguments.");
         }
+        return true;
     }
 }

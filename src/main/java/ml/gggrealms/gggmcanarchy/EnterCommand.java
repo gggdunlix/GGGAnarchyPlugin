@@ -223,7 +223,6 @@ public class EnterCommand implements CommandExecutor {
             } else {
                 player.teleport(new Location(player.getWorld(), 983,69,-1210));
             }
-            player.teleport(new Location(player.getWorld(), 983,32,-1210));
         } else {
             player.sendMessage(Component.text("Not close enough. Are you standing on the smooth stone?", TextColor.color(210, 11, 37)));
         }

@@ -3,15 +3,13 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.util.StringUtil;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class classOnTabCompleteClass implements TabCompleter {
-    private static final String[] COMMANDS = { "default", "thug", "farmer", "horseman", "agent", "bankrobber", "crackhead", "heister", "pilot", "employee", "drugslinger", "gunsmith", "captain", "boater", "investor"};
+public class PropertyAbilityCommandTab implements TabCompleter {
+    private static final String[] COMMANDS = { "boat"};
     //create a static array of values
 
     @Override
