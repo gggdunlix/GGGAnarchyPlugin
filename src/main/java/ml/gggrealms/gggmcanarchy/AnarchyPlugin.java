@@ -396,6 +396,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
             FileConfiguration cfg = getConfigFile();
             cfg.set("stashes." + pU + ".USBankOfficeStash", inventoryView.getTopInventory());
         }
+        saveConfigFile();
     }
     @EventHandler
     public void onCraft(CraftItemEvent event) {
