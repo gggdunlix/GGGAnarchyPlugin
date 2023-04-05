@@ -3,6 +3,7 @@ package ml.gggrealms.gggmcanarchy;
 import com.google.common.collect.Lists;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -10,14 +11,18 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.checkerframework.common.initializedfields.qual.EnsuresInitializedFields;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -165,6 +170,20 @@ public class BuyCommand implements CommandExecutor {
                     p.sendMessage(Component.text("You already own this bunker. Entering anyway...", TextColor.color(210, 11, 37)));
                     p.performCommand("e");
                 }
+                AnarchyPlugin.plugin.saveConfigFile();
+            }
+            else if (locationIsInCuboid(p.getLocation(), new Location(w, 882,71,-878), new Location(w, 871,68,-879))) {
+                //shop at walmart thing
+                FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
+                int money = cfg.getInt("players." + pU + ".money");
+                Inventory shop = Bukkit.createInventory(null, 54, "Supermarket");
+                ItemStack bread = new ItemStack(Material.BREAD);
+                ItemMeta breadMeta = bread.getItemMeta();
+                List<Component> breadLore = new ArrayList();
+                breadLore.add(Component.text("Bland and cheap"));
+                breadLore.add(Component.text("Cost: ").append(Component.text("$30")));
+                breadMeta.lore(breadLore);
+
                 AnarchyPlugin.plugin.saveConfigFile();
             }
             else {

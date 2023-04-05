@@ -28,7 +28,6 @@ public class StashCommand implements CommandExecutor {
         Set<String> tags = p.getScoreboardTags();
         if (locationIsInCuboid(pLoc, new Location(w, 824, 75, -927), new Location(w, 823, 72, -929))) {
             if (tags.contains("doesPlayerOwnCheapApt")) {
-                String cheapAptStash = cfg.getString("stashes." + pU + ".cheapAptStash");
                 Inventory hopperStash = Bukkit.createInventory(null, InventoryType.HOPPER, "Cheap Apartment Stash");
                 hopperStash = cfg.getObject("stashes." + pU + ".cheapAptStash", hopperStash.getClass());
 
@@ -43,13 +42,12 @@ public class StashCommand implements CommandExecutor {
         }
         else if (locationIsInCuboid(pLoc, new Location(w, 927, 92, -930), new Location(w, 926, 88, -934))) {
             if (tags.contains("doesPlayerOwnUSBankOffice")) {
-                String USBankOfficeStash = cfg.getString("stashes." + pU + ".USBankOfficeStash");
-                DoubleChestInventory chest2Stash = (DoubleChestInventory) Bukkit.createInventory(null, 54, "US Bank Office Stash");
+                Inventory chest2Stash = Bukkit.createInventory(null, 54, "US Bank Office Stash");
 
-                chest2Stash = cfg.getObject("stashes." + pU + ".cheapAptStash", chest2Stash.getClass());
+                chest2Stash = cfg.getObject("stashes." + pU + ".USBankOfficeStash", chest2Stash.getClass());
 
                 if (chest2Stash == null) {
-                    chest2Stash = (DoubleChestInventory) Bukkit.createInventory(null, InventoryType.CHEST, "US Bank Office Stash");
+                    chest2Stash = Bukkit.createInventory(null, 54, "US Bank Office Stash");
                 }
                 chest2Stash.addItem(new ItemStack(Material.AIR));
                 InventoryView view = p.openInventory(chest2Stash);
@@ -61,7 +59,7 @@ public class StashCommand implements CommandExecutor {
             if (tags.contains("doesPlayerOwnFarm")) {
                 String farmStash = cfg.getString("stashes." + pU + ".farmStash");
                 Inventory chestStash = Bukkit.createInventory(null, InventoryType.SHULKER_BOX, "Farm Stash");
-                chestStash = cfg.getObject("stashes." + pU + ".chestStash", chestStash.getClass());
+                chestStash = cfg.getObject("stashes." + pU + ".farmStash", chestStash.getClass());
 
                 if (chestStash == null) {
                     chestStash = Bukkit.createInventory(null, InventoryType.SHULKER_BOX, "Farm Stash");
@@ -71,7 +69,46 @@ public class StashCommand implements CommandExecutor {
             } else {
                 p.sendMessage(Component.text("You don't own this property.", TextColor.color(210, 11, 37)));
             }
-        } else {
+        } else if (locationIsInCuboid(pLoc, new Location(w, 687, 72, -823), new Location(w, 686, 69, -826))) {
+            if (tags.contains("doesPlayerOwnDocksOffice")) {
+                if (args.length == 1) {
+                    if (Integer.parseInt(args[0]) == 1) {
+                        Inventory chestStash = Bukkit.createInventory(null, InventoryType.SHULKER_BOX, "Docks Office Stash p1");
+                        chestStash = cfg.getObject("stashes." + pU + ".docksStash1", chestStash.getClass());
+
+                        if (chestStash == null) {
+                            chestStash = Bukkit.createInventory(null, InventoryType.SHULKER_BOX, "Docks Office Stash p1");
+                        }
+                        chestStash.addItem(new ItemStack(Material.AIR));
+                        InventoryView view = p.openInventory(chestStash);
+                    } else if (Integer.parseInt(args[0]) == 2) {
+                        Inventory chestStash = Bukkit.createInventory(null, InventoryType.SHULKER_BOX, "Docks Office Stash p2");
+                        chestStash = cfg.getObject("stashes." + pU + ".docksStash2", chestStash.getClass());
+
+                        if (chestStash == null) {
+                            chestStash = Bukkit.createInventory(null, InventoryType.SHULKER_BOX, "Docks Office Stash p2");
+                        }
+                        chestStash.addItem(new ItemStack(Material.AIR));
+                        InventoryView view = p.openInventory(chestStash);
+                    } else if (Integer.parseInt(args[0]) == 3) {
+                        Inventory chestStash = Bukkit.createInventory(null, InventoryType.SHULKER_BOX, "Docks Office Stash p3");
+                        chestStash = cfg.getObject("stashes." + pU + ".docksStash3", chestStash.getClass());
+
+                        if (chestStash == null) {
+                            chestStash = Bukkit.createInventory(null, InventoryType.SHULKER_BOX, "Docks Office Stash p3");
+                        }
+                        chestStash.addItem(new ItemStack(Material.AIR));
+                        InventoryView view = p.openInventory(chestStash);
+                    } else {
+                        p.sendMessage(Component.text("What page? There's only 1, 2, and 3.", TextColor.color(210, 11, 37)));
+                    }
+                } else {
+                    p.sendMessage(Component.text("This stash has 3 pages. Please type /stash <pageNumber> to access a specific page.", TextColor.color(210, 11, 37)));
+                }
+            } else {
+                p.sendMessage(Component.text("You don't own this property.", TextColor.color(210, 11, 37)));
+            }
+        } else  {
             p.sendMessage(Component.text("You aren't close enough to a stash. Are you sure you are standing on the smooth stone?", TextColor.color(210, 11, 37)));
         }
         return true;

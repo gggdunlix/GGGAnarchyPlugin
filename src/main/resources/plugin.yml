@@ -5,8 +5,10 @@ description: "Anarchy plugin base for GGG Anarchy Server"
 api-version: 1.19
 author: "GGGDunlix"
 commands:
-  gggmcanarchy:
-    aliases: gggmca
+  anarcrafthelp:
+    aliases:
+      - "serverhelp"
+      - "gggmca"
     usage: "/gggmcanarchy"
   savequit:
     description: "Saves your progress and leaves the server"
@@ -73,6 +75,11 @@ commands:
       - "playerlist"
   party:
     description: "shows commands for managing player parties."
+  partychat:
+    description: "Send private messages to all members of your party"
+    aliases:
+      - "p"
+      - "pchat"
   propertyability:
     description: "Allows you to perform the special ability for certain properties."
     aliases:

@@ -9,6 +9,7 @@ import com.sun.tools.javac.Main;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import net.kyori.adventure.util.HSVLike;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -26,6 +27,7 @@ import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.CraftItemEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.Inventory;
@@ -33,6 +35,7 @@ import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -50,6 +53,7 @@ import java.util.*;
 public class AnarchyPlugin extends JavaPlugin implements Listener {
 
     public static AnarchyPlugin plugin;
+    private Lang lang;
 
     public void saveConfigFile() {
         this.saveConfig();
@@ -76,6 +80,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         }.runTaskTimer(Bukkit.getPluginManager().getPlugin("GGG-Anarchy"), 5*60*20, 5*60*20);
 
         this.getCommand("savequit").setExecutor(new SaveQuit());
+        this.getCommand("partychat").setExecutor(new PartyChat());
         this.getCommand("editcfg").setExecutor(new EditCfg());
         this.getCommand("bugreport").setExecutor(new BugreportCommand());
         this.getCommand("enter").setExecutor(new EnterCommand());
@@ -89,6 +94,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         this.getCommand("safe").setExecutor(new SafeCommand());
         this.getCommand("safe").setTabCompleter(new SafeTabCompleter());
         this.getCommand("givemoney").setExecutor(new GiveMoneyCommand());
+        this.getCommand("anarcrafthelp").setExecutor(new HelpCommand());
         this.getCommand("plist").setExecutor(new PListCommand());
         this.getCommand("autospawn").setExecutor(new AutospawnCommand());
         this.getCommand("autospawn").setTabCompleter(new AutospawnTabCompleter());
@@ -113,7 +119,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         //joinedP.sendMessage(Component.text("Hello, " + event.getPlayer().getName() + "!"));
         //joinedP.sendMessage(Component.text("So, What's going on here? \nWell, This is gonna be the start of an anarchy server. But not just any random one, One where players cannot mine or place things, just play the game with mechanics and a gamemode we implement ourselves."));
         //joinedP.sendMessage(Component.text("Right now, we're gonna set you to creative and ask that you start building a city with buildings that would have a function, like stores, offices, houses, whatever you feel should fit. Eventually, the server will be playable and very fun.\nThanks, GGGDunlix & GGGCarl."));
-        if (joinedP.isOp()) joinedP.sendMessage("Ops can spawn as dev class to spawn creative mode.");
+        if (joinedP.isOp()) joinedP.sendMessage(lang.opJoinMessage);
         Bukkit.getServer().setSpawnRadius(0);
 
         FileConfiguration customConfig = getConfigFile();
@@ -135,8 +141,6 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
             customConfig.set("players." + pUUID + ".autospawn", true);
             customConfig.set("players." + pUUID + ".autospawnRate", 10);
         }
-
-
         Boolean isDataSaved = false;
         // get if the player saved before quitting
         Set<String> tags = joinedP.getScoreboardTags();
@@ -147,7 +151,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         }
 
         if (isDataSaved) {
-            joinedP.sendMessage(Component.text("Data loaded, welcome back!", TextColor.color(254, 214, 69)));
+            joinedP.sendMessage(lang.dataLoadedFromSave);
             joinedP.removeScoreboardTag("saved");
 
         } else {
@@ -161,12 +165,17 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
             pli1.setChestplate(new ItemStack(Material.AIR));
             pli1.setLeggings(new ItemStack(Material.AIR));
             pli1.setBoots(new ItemStack(Material.AIR));
-            joinedP.sendMessage(Component.text("No data saved, did you not use /savequit?", TextColor.color(HSVLike.fromRGB(255, 35, 10))));
+            joinedP.sendMessage(lang.noDataLoadedMessage);
             joinedP.removeScoreboardTag("classFarmer");
             joinedP.removeScoreboardTag("classDefault");
             joinedP.removeScoreboardTag("classRider");
             joinedP.removeScoreboardTag("classHorseman");
+            joinedP.removeScoreboardTag("classBoater");
+            joinedP.removeScoreboardTag("classThug");
+            joinedP.removeScoreboardTag("classCrackhead");
             joinedP.removeScoreboardTag("classDev");
+            joinedP.removeScoreboardTag("classFisherman");
+            joinedP.removeScoreboardTag("classBankrobber");
 
             joinedP.removeScoreboardTag("factionFarmer");
             joinedP.removeScoreboardTag("factionLeather");
@@ -176,7 +185,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
             int autospawnRate = customConfig.getInt("players." + pUUID + ".autospawnRate");
 
             if (customConfig.getBoolean("players." + pUUID + ".autospawn", false)) {
-                joinedP.sendMessage("Automatically spawning as default in " + customConfig.getInt("players." + pUUID + ".autospawnRate"));
+                joinedP.sendMessage(lang.autoSpawnWarning(customConfig, "players." + pUUID + ".autospawnRate"));
                 new BukkitRunnable() {
                     @Override
                     public void run() {
@@ -186,12 +195,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
                     }
                 }.runTaskLater(Bukkit.getPluginManager().getPlugin("GGG-Anarchy"), customConfig.getInt("players." + pUUID + ".autospawnRate") * 20);
             }
-
-
-
         }
-
-
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -214,11 +218,21 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
                     int currentCoolNum = cfg.getInt("players." + pUUID + ".boatDelay");
                     cfg.set("players." + pUUID + ".boatDelay", currentCoolNum - 1);
                 }
+                //Fisherman Cooldown
+                if (cfg.getInt("players." + pUUID + ".fishermanCooldown") > 0) {
+                    int currentCoolNum = cfg.getInt("players." + pUUID + ".fishermanCooldown");
+                    cfg.set("players." + pUUID + ".fishermanCooldown", currentCoolNum - 1);
+                }
+                //Thug Cooldown
+                if (cfg.getInt("players." + pUUID + ".thugCooldown") > 0) {
+                    int currentCoolNum = cfg.getInt("players." + pUUID + ".thugCooldown");
+                    cfg.set("players." + pUUID + ".thugCooldown", currentCoolNum - 1);
+                }
                 saveConfigFile();
             }
         }.runTaskTimer(Bukkit.getPluginManager().getPlugin("GGG-Anarchy"), 20, 20);
         FastBoard board = new FastBoard(joinedP);
-        board.updateTitle("AnarCraft");
+        board.updateTitle(lang.scoreboardTitle);
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -282,6 +296,7 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         deadPlayer.removeScoreboardTag("classCrackhead");
         deadPlayer.removeScoreboardTag("classDev");
         deadPlayer.removeScoreboardTag("classFisherman");
+        deadPlayer.removeScoreboardTag("classBankrobber");
 
         deadPlayer.removeScoreboardTag("factionFarmer");
         deadPlayer.removeScoreboardTag("factionAgent");
@@ -302,13 +317,15 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         int autospawnRate = customConfig.getInt("players." + pUUID + ".autospawnRate");
 
         if (customConfig.getBoolean("players." + pUUID + ".autospawn")) {
-            spawnedPlayer.sendMessage("Automatically spawning as default in " + autospawnRate + " seconds. (/as to change)");
+            spawnedPlayer.sendMessage(lang.autoRespawnWarning(autospawnRate));
             new BukkitRunnable() {
 
                 @Override
                 public void run() {
-                    if (spawnedPlayer.getScoreboardTags().contains("isPlayerInHub")) {
-                        spawnedPlayer.performCommand("class default");
+                    if (customConfig.getBoolean("players." + pUUID + ".autospawn")) {
+                        if (spawnedPlayer.getScoreboardTags().contains("isPlayerInHub")) {
+                            spawnedPlayer.performCommand("class default");
+                        }
                     }
                 }
             }.runTaskLater(Bukkit.getPluginManager().getPlugin("GGG-Anarchy"), customConfig.getInt("players." + pUUID + ".autospawnRate") * 20);
@@ -386,32 +403,136 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         InventoryView inventoryView = event.getView();
         Player p = (Player) event.getPlayer();
         UUID pU = p.identity().uuid();
-        if (inventoryView.getTitle().equals("Cheap Apartment Stash")) {
-            p.sendMessage("saved stash.");
+        if (inventoryView.getTitle().equals(lang.cheapAptStashTitle)) {
+            p.sendMessage(lang.stashSaved);
             FileConfiguration cfg = getConfigFile();
             cfg.set("stashes." + pU + ".cheapAptStash", inventoryView.getTopInventory());
         }
-        if (inventoryView.getTitle().equals("US Bank Office Stash")) {
-            p.sendMessage("saved stash.");
+        if (inventoryView.getTitle().equals(lang.USBankOfficeStashTitle)) {
+            p.sendMessage(lang.stashSaved);
             FileConfiguration cfg = getConfigFile();
             cfg.set("stashes." + pU + ".USBankOfficeStash", inventoryView.getTopInventory());
         }
+        if (inventoryView.getTitle().equals(lang.docksOfficeStash1Title)) {
+            p.sendMessage(lang.stashSaved);
+            FileConfiguration cfg = getConfigFile();
+            cfg.set("stashes." + pU + ".docksStash1", inventoryView.getTopInventory());
+        }
+        if (inventoryView.getTitle().equals(lang.docksOfficeStash2Title)) {
+            p.sendMessage(lang.stashSaved);
+            FileConfiguration cfg = getConfigFile();
+            cfg.set("stashes." + pU + ".docksStash2", inventoryView.getTopInventory());
+        }
+        if (inventoryView.getTitle().equals(lang.docksOfficeStash3Title)) {
+            p.sendMessage(lang.stashSaved);
+            FileConfiguration cfg = getConfigFile();
+            cfg.set("stashes." + pU + ".docksStash3", inventoryView.getTopInventory());
+        }
+        if (inventoryView.getTitle().equals(lang.farmStashTitle)) {
+            p.sendMessage(lang.stashSaved);
+            FileConfiguration cfg = getConfigFile();
+            cfg.set("stashes." + pU + ".farmStash", inventoryView.getTopInventory());
+        }
+        saveConfigFile();
     }
     @EventHandler
     public void onCraft(CraftItemEvent event) {
         Player p = (Player) event.getWhoClicked();
-        p.sendMessage("clicked");
         if (getFaction(p).equals("farmer")) {
             p.sendMessage("isFarmer");
             if (event.getRecipe().getResult().getType().toString().equals("PUMPKIN_SEEDS") || event.getRecipe().getResult().getType().toString().equals("MELON_SEEDS")) {
-                p.sendMessage("correct item");
                 ItemStack res = event.getRecipe().getResult();
                 ItemMeta resultMeta = res.getItemMeta();
-                resultMeta.setPlaceableKeys(Lists.newArrayList(Material.FARMLAND.getKey()));
+                resultMeta.setPlaceableKeys(Lists.newArrayList(Material.FARMLAND.getKey(), Material.CALCITE.getKey()));
                 res.setItemMeta(resultMeta);
-                p.sendMessage("item complete");
             }
         }
+    }
+    @EventHandler
+    public void onInvItemClick(InventoryClickEvent event) {
+        Player whoClicked = (Player) event.getWhoClicked();
+        ItemStack clickedItem = event.getCurrentItem();
+        Boolean dontTake = false;
+        // click Bounty item in stilt pc
+        int finalBountySize = lang.bountyBase;
+        int finalBountyPrice = finalBountySize * lang.bountyPriceFactor;
+        String finalBountyPlayer = "";
+        if (clickedItem.getItemMeta().lore().contains(lang.bountyAppLore)) {
+            dontTake = true;
+            event.getClickedInventory().close();
+            whoClicked.closeInventory();
+            Inventory playerChooseBounty = Bukkit.createInventory(null, 54, lang.bountyPlayerChoiceDisplayName);
+            int playerCount = Bukkit.getOnlinePlayers().size();
+            if (playerCount <= 54) {
+                ArrayList<Player> players = (ArrayList<Player>) Bukkit.getOnlinePlayers();
+                for (Player p : players) {
+                    ItemStack skull = new ItemStack(Material.PLAYER_HEAD);
+                    SkullMeta skullMeta = (SkullMeta) skull.getItemMeta();
+                    skullMeta.setOwningPlayer(p);
+                    skullMeta.displayName(Component.text(p.name() + ""));
+                    List<Component> skullLore = new ArrayList();
+                    skullLore.add(lang.bountyPlayerSkullLore1);
+                    skullLore.add(Component.text(p.name().toString()));
+                    skull.setItemMeta(skullMeta);
+                    playerChooseBounty.addItem(skull);
+                }
+            }
+            whoClicked.openInventory(playerChooseBounty);
+        }
+        //When clicked on player in bounty menu
+        if (clickedItem.lore().get(0).equals(lang.bountyPlayerSkullLore1)) {
+            dontTake = true;
+            String pName = PlainTextComponentSerializer.plainText().serialize(clickedItem.lore().get(1));
+            Player setBountyOn = Bukkit.getPlayer(pName);
+            FileConfiguration cfg = getConfigFile();
+            UUID toSetUUID = setBountyOn.identity().uuid();
+            int money = cfg.getInt("players." + whoClicked.identity().uuid() + ".money", 0);
+            if (cfg.getInt("players." + toSetUUID + ".bounty", 0) > 0) {
+                whoClicked.closeInventory();
+                Inventory chooseBountyPrice = Bukkit.createInventory(null, 54, lang.bountyChooseAmtWindow);
+                for (int i = 0; i <= 8; i++) {
+                    int bounty = lang.bountyBase + (i*lang.bountyBase);
+                    int cost = bounty*lang.bountyPriceFactor;
+                    ItemStack price;
+                    if (money >= cost) {
+                        price = new ItemStack(Material.REDSTONE);
+                    } else {
+                        price = new ItemStack(Material.BARRIER);
+                    }
+                    ItemMeta pricemeta = price.getItemMeta();
+                    pricemeta.displayName(Component.text(pName + " : ").append(Component.text("$" + bounty, TextColor.color(0xFF6604))));
+                    List<Component> priceMetaLore = new ArrayList();
+                    priceMetaLore.add(Component.text("Cost: ").append(Component.text("$" + cost, TextColor.color(0xB9FF55))));
+                    if (money < cost) {
+                        priceMetaLore.add(lang.bountyChooseAmtLoreNotEnough);
+                    } else {
+                        priceMetaLore.add(lang.bountyChooseAmtLore);
+                    }
+                    pricemeta.lore(priceMetaLore);
+                    price.setItemMeta(pricemeta);
+                    finalBountyPrice = cost;
+                    finalBountySize = bounty;
+                    finalBountyPlayer = pName;
+                }
+
+            } else {
+                whoClicked.sendMessage(lang.alreadyBoundError(pName));
+            }
+        }
+        if (clickedItem.lore().get(1).equals(lang.bountyChooseAmtLore)) {
+            FileConfiguration cfg = getConfigFile();
+            UUID pUUID = whoClicked.identity().uuid();
+            int money = cfg.getInt("players." + pUUID + ".money");
+            money -= finalBountyPrice;
+            Player setBountyOn = Bukkit.getPlayer(finalBountyPlayer);
+            cfg.set("players." + pUUID + ".money", money);
+            cfg.set("players." + setBountyOn.identity().uuid() + ".bounty", finalBountySize);
+            setBountyOn.sendMessage(lang.bountySetAlert(finalBountySize));
+        }
+        if (dontTake) {
+            event.setCancelled(true);
+        }
+        saveConfigFile();
     }
     @EventHandler
     public void onPlayerDamage(EntityDamageByEntityEvent event) {
@@ -427,7 +548,17 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
         }
         if (damagerParty == recipParty && damagerParty != -1) {
             event.setCancelled(true);
-            damager.sendMessage(Component.text("Blocked friendly fire.", TextColor.color(210, 11, 37)));
+            damager.sendMessage(lang.blockedFriendlyFire);
+        }
+    }
+    @EventHandler
+    public void onCommandRun(org.bukkit.event.player.PlayerCommandPreprocessEvent event) {
+        String command = event.getMessage();
+        if (command.equals("help")) {
+            event.setMessage("serverhelp");
+        }
+        if (command.equals("list")) {
+            event.setMessage("plist");
         }
     }
 }

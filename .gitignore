@@ -1,2 +1,4 @@
 /src/main/java/ml/gggrealms/gggmcanarchy/DiscordWebhook.java
 src/main/java/ml/gggrealms/gggmcanarchy/BugreportCommand.java
+gradle.properties
+/things/

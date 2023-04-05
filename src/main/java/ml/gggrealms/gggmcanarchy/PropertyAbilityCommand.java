@@ -2,7 +2,9 @@ package ml.gggrealms.gggmcanarchy;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -11,12 +13,20 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.player.PlayerEditBookEvent;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 public class PropertyAbilityCommand implements CommandExecutor {
+    private Lang lang;
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         Player p = (Player) sender;
@@ -27,7 +37,10 @@ public class PropertyAbilityCommand implements CommandExecutor {
         if (args.length == 0) {
             sender.sendMessage(Component.text("Property Abilities: ", TextColor.color(42, 101, 255)));
             sender.sendMessage(Component.text("|  ->", TextColor.color(42, 101, 255)).append(Component.text("/pa boat ", TextColor.color(244, 126, 57)).append(Component.text("- Spawns a boat if near the Docks Office. Need to own Docks Office."))));
-        } else if (args[0].equals("boat")) {
+            sender.sendMessage(Component.text("|  ->", TextColor.color(42, 101, 255)).append(Component.text("/pa pc ", TextColor.color(244, 126, 57)).append(Component.text("- Access the US Bank Office PC. You need to own the property."))));
+
+        }
+        else if (args[0].equals("boat")) {
             if (tags.contains("doesPlayerOwnDocksOffice")) {
                 if (locationIsInCuboid(p.getLocation(), new Location(w, 679,66,-800), new Location(w,672,61,-805))) {
                     int delay = cfg.getInt("players." + pU + ".boatDelay", 0);
@@ -41,13 +54,33 @@ public class PropertyAbilityCommand implements CommandExecutor {
                         cfg.set("players." + pU + ".boatDelay", 600);
                     }
                 } else {
-                    p.sendMessage(Component.text("Go to the smooth stone at the back of the Docks Office to do this .", TextColor.color(210, 11, 37)));
+                    p.sendMessage(lang.docksOfficeAbilDistanceError);
                 }
             } else {
-                p.sendMessage(Component.text("You need to own 'Docks Office' to use this ability.", TextColor.color(210, 11, 37)));
+                p.sendMessage(lang.docksOfficeAbilOwnershipError);
             }
-        } else {
-            p.sendMessage(Component.text("Invalid usage. Try using /pa to see available commands.", TextColor.color(210, 11, 37)));
+        }
+        else if (args[0].equals("pc")) {
+            if (tags.contains("doesPlayerOwnUSBankOffice")) {
+                if (locationIsInCuboid(p.getLocation(), new Location(w, 914,91,-926), new Location(w,912,89,-928))) {
+                    Inventory pcInv = Bukkit.createInventory(null, 54, lang.USBankOfficePCTitle);
+                    ItemStack bountyItem = new ItemStack(Material.SKELETON_SKULL);
+                    ItemMeta bountyItemMeta = bountyItem.getItemMeta();
+                    bountyItemMeta.displayName(lang.bountyAppDisplayName);
+                    List<Component> bountyItemLore = new ArrayList();
+                    bountyItemLore.add(lang.bountyAppLore);
+                    bountyItemMeta.lore(bountyItemLore);
+                    bountyItem.setItemMeta(bountyItemMeta);
+                    pcInv.setItem(0, bountyItem);
+                } else {
+                    p.sendMessage(lang.USBankOfficePCDistanceError);
+                }
+            } else {
+                p.sendMessage(lang.USBankOfficeAbilOwnershipError);
+            }
+        }
+        else {
+            p.sendMessage(lang.propAbilUsageError);
         }
         AnarchyPlugin.plugin.saveConfigFile();
         return true;

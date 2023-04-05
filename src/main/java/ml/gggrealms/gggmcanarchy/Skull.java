@@ -10,14 +10,24 @@ public class Skull {
   private UUID pUUID;
   private int moneyAmount;
   private int level;
-  public Skull() {}
+  public Skull() {
+    skullUUID = null;
+    player = null;
+    loc = null;
+    moneyAmount = 0;
+    level = 0;
+
+  }
   public Skull(Player owner, Location location, int money, int lvl) {
     skullUUID = UUID.randomUUID();
     player = owner;
     loc = location;
-    pUUID = owner.identity().uuid();
+    this.getPlayerUUID(player);
     moneyAmount = money;
     level = lvl;
+  }
+  public UUID getPlayerUUID(Player p) {
+    return p.identity().uuid();
   }
   public void registerSkull() {
     FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
