@@ -4,8 +4,9 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.util.HSVLike;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 
 public class Lang {
     public TextColor errorRed = TextColor.color(210, 11, 37);
@@ -25,11 +26,25 @@ public class Lang {
 
     public Component blockedFriendlyFire = Component.text("Blocked friendly fire.", errorRed);
 
-    public int cheapAptCost;
-    public int motelCost;
-    public int USBankOfficeCost;
-    public int bunkerCost;
-    public int
+    public double upkeepFactor = .005;
+    public double maxStashFactor = 2.5;
+
+    World w = Bukkit.getWorld("world");
+
+    public Property motel = new Property(5000, 0, "Motel", new String[]{"classCrackhead", "classEmployee"});
+    public Property cheapApartment = new Property(20000, 5, "Cheap Apartment", new String[]{"classThug"});
+    public Property farm = new Property(150000, 27, "Farm", new String[]{"classHorseman"});
+    public Property opalHotel = new Property(200000, 54, "Opal Hotel", new String[]{"classDrugSlinger", "classGunsmith"});
+    public Property usBankOffice = new Property(300000, 54, "US Bank Office", new String[]{"classBankRobber"});
+    public Property rooseveltResidence = new Property(500000, 27, "Roosevelt Residence", new String[]{"classInvestor", "classBanker"}, 3);
+    public Property docksOffice = new Property(650000, 27, "Opal Hotel", new String[]{"classDrugSlinger", "classGunsmith"}, 3);
+    public Property bunker = new Property(1000000, 54, "Bunker", new String[]{"classHeister"}, 2);
+    public Property casino = new Property(50000000, 54, "Casino", new String[]{"classPilot", "classAgent"}, 3);
+
+    public Property[] allProps = new Property[]{motel,cheapApartment,farm,opalHotel,usBankOffice,rooseveltResidence,docksOffice,bunker,casino}
+
+    public PropertyPos motelPos = new PropertyPos(motel, new Location(w, 00,00,00),new Location(w, 00,00,00),new Location(w, 00,00,00),new Location(w, 00,00,00),new Location(w, 00,00,00),new Location(w, 00,00,00));
+    public PropertyPos cheapApartmentPos = new PropertyPos(cheapApartment,  new Location(w, 830, 76, -933), new Location(w, 829, 72, -934),new Location(w, 826, 73, -933),new Location(w, 827, 74, -933), new Location(w, 826, 72, -934),new Location(w, 830, 73, -933));
 
     public String cheapAptStashTitle = "Cheap Apartment Stash";
     public String USBankOfficeStashTitle = "US Bank Office Stash";
