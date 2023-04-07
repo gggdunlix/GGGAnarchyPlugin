@@ -143,6 +143,15 @@ public class SellCommand implements CommandExecutor {
                 } else {
                     sender.sendMessage(Component.text("You need to be a farmer to sell your crops. Use /join.", TextColor.color(210, 11, 37)));
                 }
+            } else if (locationIsInCuboid(p.getLocation(), new Location(w, 00, 00, -00), new Location(w, 00, 00, -00))) { //get Docks Office location pls!
+                PlayerInventory i = p.getInventory();
+                ItemStack[] contents = i.getContents();
+                for (ItemStack iS : contents) {
+                    int amt = iS.getAmount();
+                    if (iS.getType().equals(Material.RAW_COD)) {
+                        //k fix this
+                    }
+                }
             } else {
                 sender.sendMessage(Component.text("Too far, please stand on the smooth stone.", TextColor.color(210, 11, 37)));
             }
