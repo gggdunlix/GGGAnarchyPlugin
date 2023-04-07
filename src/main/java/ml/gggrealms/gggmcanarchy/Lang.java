@@ -45,7 +45,11 @@ public class Lang {
 
     public PropertyPos motelPos = new PropertyPos(motel, new Location(w, 00,00,00),new Location(w, 00,00,00),new Location(w, 00,00,00),new Location(w, 00,00,00),new Location(w, 00,00,00),new Location(w, 00,00,00));
     public PropertyPos cheapApartmentPos = new PropertyPos(cheapApartment,  new Location(w, 830, 76, -933), new Location(w, 829, 72, -934),new Location(w, 826, 73, -933),new Location(w, 827, 74, -933), new Location(w, 826, 72, -934),new Location(w, 830, 73, -933));
-
+    public PropertyPos farmPos = new PropertyPos(farm, new Location(w, 1051,65,-669), new Location(w, 1048,62,-672), new Location(player.getWorld(), 1037, 71, -678), new Location(w, 1037,72,-678), new Location(w, 1036,70,-680), new Location(player.getWorld(), 1048, 63, -670));
+    public PropertyPos usBankOfficePos = new PropertyPos(usBankOffice,new Location(w, 924,92,-929), new Location(w, 922,88,-930),new Location(player.getWorld(), 920, 89, -929),new Location(w, 920,90,-929), new Location(w, 919,88,-930),new Location(player.getWorld(), 923, 89, -929));
+    public PropertyPos docksOfficePos = new PropertyPos(docksOffice,new Location(w, 684, 72, -830), new Location(w, 682, 69, -832),new Location(w, 683, 70, -827),new Location(w, 684, 72, -826), new Location(w, 682, 69, -828),new Location(w, 683, 70, -831));
+    public PropertyPosition bunkerPos = new PropertyPos(bunker, new Location(w, 762,69,-599), new Location(w, 756,66,-601),new Location(w, 759, 58, -608), new Location(w, 760,60,-607), new Location(w, 758,57,-609),new Location(w, 759.5,67,-599.5));
+    
     public String cheapAptStashTitle = "Cheap Apartment Stash";
     public String USBankOfficeStashTitle = "US Bank Office Stash";
     public String docksOfficeStash1Title = "Docks Office Stash p1";
