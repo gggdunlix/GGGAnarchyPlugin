@@ -2,8 +2,8 @@ package ml.gggrealms.gggmcanarchy;
 
 import org.bukkit.Location;
 
-public class PropertyPos extends Property {
-    private Property property;
+public class PropertyPos {
+    private PropertyInfo property;
     private Location enter1;
     private Location enter2;
     private Location exit1;
@@ -11,8 +11,7 @@ public class PropertyPos extends Property {
     private Location enterTPto;
     private Location exitTPto;
 
-    public PropertyPos(Property prop, Location e1, Location e2, Location eTP, Location x1, Location x2, Location xTP) {
-        super(prop.getCost(), prop.getStashSize(), prop.getName(), prop.getClasses());
+    public PropertyPos(PropertyInfo prop, Location e1, Location e2, Location eTP, Location x1, Location x2, Location xTP) {
         property = prop;
         enter1 = e1;
         enter2 = e2;
@@ -33,7 +32,7 @@ public class PropertyPos extends Property {
     public Location getX2() {
         return exit2;
     }
-    public Property getProperty() {
+    public PropertyInfo getProperty() {
         return property;
     }
     public Location getEnterTP() {
