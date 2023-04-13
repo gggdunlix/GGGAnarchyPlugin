@@ -93,6 +93,10 @@ public class Lang {
     public String USBankOfficePCTitle = "US Bank Office PC";
     public Component USBankOfficePCDistanceError = Component.text("Go to the smooth stone at the Computer in the US Bank Office to use this.", errorRed);
     public Component USBankOfficeAbilOwnershipError = Component.text("You need to own 'US Bank Office' to use this ability.", errorRed);
+    
+    public Component notEnoughMoney(int have, int need) {
+        return Component.text("You don't have enough money. You need $" + need-have + " more.", errorRed);
+    }
 
     public int bountyBase = 1000;
     public int bountyPriceFactor = 2;
