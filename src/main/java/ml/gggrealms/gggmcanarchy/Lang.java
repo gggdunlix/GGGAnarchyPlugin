@@ -58,6 +58,9 @@ public class Lang {
     public PropertySafe usBankOfficeSafe = new PropertySafe(usBankOfficeI, new Location(w,762, 16, -612), new Location(w, 756, 12, -615));
     public PropertySafe docksOfficeSafe = new PropertySafe(docksOfficeI, new Location(w,679, 71, -823), new Location(w, 678, 69, -826));
     public PropertySafe bunkerSafe = new PropertySafe(bunkerI, new Location(w,762, 16, -612), new Location(w, 756, 12, -615));
+    
+    public PropertySafe mbaBank1 = new PropertySafe("mbaBank", new Location(w, 855, 72, -893), new Location(w, 854, 68, -894), 300000);
+    public PropertySafe mbaBank2 = new PropertySafe("mbaBank", new Location(w, 851, 72, -893), new Location(w, 850, 68, -894), 300000);
 
     public PropertySafe[] allPropSafes = {cheapApartmentSafe,farmSafe,usBankOfficeSafe,docksOfficeSafe,bunkerSafe};
 
