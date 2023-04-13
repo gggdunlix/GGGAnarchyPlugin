@@ -1,6 +1,7 @@
-package ml.gggrealms.gggmcanarchy;
+package ml.gggrealms.gggmcanarchy.Properties;
 
 import com.google.common.collect.Lists;
+import ml.gggrealms.gggmcanarchy.AnarchyPlugin;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -183,6 +184,7 @@ public class BuyCommand implements CommandExecutor {
                 breadLore.add(Component.text("Bland and cheap"));
                 breadLore.add(Component.text("Cost: ").append(Component.text("$30")));
                 breadMeta.lore(breadLore);
+
 
                 AnarchyPlugin.plugin.saveConfigFile();
             }

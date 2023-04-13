@@ -1,4 +1,4 @@
-package ml.gggrealms.gggmcanarchy;
+package ml.gggrealms.gggmcanarchy.Properties;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.command.Command;

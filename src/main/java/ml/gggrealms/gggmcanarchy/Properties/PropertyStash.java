@@ -1,5 +1,6 @@
-package ml.gggrealms.gggmcanarchy;
+package ml.gggrealms.gggmcanarchy.Properties;
 
+import ml.gggrealms.gggmcanarchy.Lang;
 import org.bukkit.Location;
 
 public class PropertyStash {

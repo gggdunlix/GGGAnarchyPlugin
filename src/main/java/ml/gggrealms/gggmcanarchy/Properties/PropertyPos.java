@@ -1,4 +1,4 @@
-package ml.gggrealms.gggmcanarchy;
+package ml.gggrealms.gggmcanarchy.Properties;
 
 import org.bukkit.Location;
 

@@ -1,4 +1,6 @@
-package ml.gggrealms.gggmcanarchy;
+package ml.gggrealms.gggmcanarchy.Properties;
+
+import ml.gggrealms.gggmcanarchy.Lang;
 
 import java.util.Locale;
 
