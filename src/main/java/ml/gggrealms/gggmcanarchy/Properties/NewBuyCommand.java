@@ -42,6 +42,9 @@ public class NewBuyCommand implements CommandExecutor {
             for (Property prop : props) {
                 int cost = prop.getInfo().getCost();
                 int upkeep = prop.getInfo().getUpkeep();
+                if (cost > money) {
+                    player.sendMessage(lang.notEnoughMoney(money, cost));
+                }
 
             }
 
