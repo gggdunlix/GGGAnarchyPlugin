@@ -42,21 +42,29 @@ public class NewBuyCommand implements CommandExecutor {
             for (Property prop : props) {
                 int cost = prop.getInfo().getCost();
                 int upkeep = prop.getInfo().getUpkeep();
-                if (cost > money) {
-                    player.sendMessage(lang.notEnoughMoney(money, cost));
-                }
+                String propName = prop.getInfo().getName();
+                String propNamespace = prop.getInfo().getNamespace();
+                String propTag = "propOwned." + propNamespace;
+                if (!tags.contains(propTag)) {
+                    if (cost > money) {
+                        p.sendMessage(lang.notEnoughMoney(money, cost));
+                    } else {
+                        money -= cost;
+                        rank += upkeep;
+                        p.addScoreboardTag(propTag);
 
+                    }
+                } else {
+                    p.sendMessage(lang.alreadyOwnProp(prop));
+                    p.performCommand("e");
+                }
             }
 
             if (lang.locationIsInCuboid(p.getLocation(), new Location(w, 1043,68,-670), new Location(w, 1038, 62,-671))) {
                 //buy tools thing at farm
                 if (AnarchyPlugin.plugin.getFaction(p).equals("farmer")) {
-                    FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
-                    int money = cfg.getInt("players." + pU + ".money");
                     if (money >= 500) {
                         money -= 500;
-                        cfg.set("players." + pU + ".money", money);
-                        AnarchyPlugin.plugin.saveConfigFile();
                         PlayerInventory i = p.getInventory();
                         ItemStack stone_hoe = new ItemStack(Material.STONE_HOE);
                         ItemMeta hoe_meta = stone_hoe.getItemMeta();
@@ -88,8 +96,6 @@ public class NewBuyCommand implements CommandExecutor {
             }
             else if (lang.locationIsInCuboid(p.getLocation(), new Location(w, 882,71,-878), new Location(w, 871,68,-879))) {
                 //shop at walmart thing
-                FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
-                int money = cfg.getInt("players." + pU + ".money");
                 Inventory shop = Bukkit.createInventory(null, 54, "Supermarket");
                 ItemStack bread = new ItemStack(Material.BREAD);
                 ItemMeta breadMeta = bread.getItemMeta();
@@ -97,13 +103,13 @@ public class NewBuyCommand implements CommandExecutor {
                 breadLore.add(Component.text("Bland and cheap"));
                 breadLore.add(Component.text("Cost: ").append(Component.text("$30")));
                 breadMeta.lore(breadLore);
-
-
-                AnarchyPlugin.plugin.saveConfigFile();
             }
             if (!worked) {
                 p.sendMessage(Component.text("Not close enough. Are you standing on the smooth stone?", TextColor.color(210, 11, 37)));
             }
+            cfg.set("players." + pU + ".money", money);
+            cfg.set("players." + pU + ".rank", rank);
+            AnarchyPlugin.plugin.saveConfigFile();
         } else {
             sender.sendMessage(Component.text("Wrong usage. This command doesn't take any arguments, it's just /buy.", TextColor.color(210, 11, 37)));
         }

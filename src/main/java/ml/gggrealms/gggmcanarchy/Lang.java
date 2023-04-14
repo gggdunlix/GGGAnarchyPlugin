@@ -32,6 +32,9 @@ public class Lang {
 
     World w = Bukkit.getWorld("world");
 
+    public Component alreadyOwnProp(Property prop) {
+        return Component.text("You already own " + prop.getInfo().getName() + ". Entering anyway.", errorRed);
+    }
     public PropertyInfo motelI = new PropertyInfo(5000, "Motel", new String[]{"classCrackhead", "classEmployee"});
     public PropertyInfo cheapApartmentI = new PropertyInfo(20000,  "Cheap Apartment", new String[]{"classThug"});
     public PropertyInfo farmI = new PropertyInfo(150000,  "Farm", new String[]{"classHorseman"});
@@ -95,7 +98,7 @@ public class Lang {
     public Component USBankOfficeAbilOwnershipError = Component.text("You need to own 'US Bank Office' to use this ability.", errorRed);
     
     public Component notEnoughMoney(int have, int need) {
-        return Component.text("You don't have enough money. You need $" + need-have + " more.", errorRed);
+        return Component.text("You don't have enough money. You need $" + (need-have) + " more.", errorRed);
     }
 
     public int bountyBase = 1000;
