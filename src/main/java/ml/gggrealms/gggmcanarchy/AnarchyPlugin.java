@@ -259,14 +259,14 @@ public class AnarchyPlugin extends JavaPlugin implements Listener {
     public int getPropCount(Player player) {
         Set<String> tags = player.getScoreboardTags();
         int propertyCount = 0;
-        if (tags.contains("doesPlayerOwnMotel")) propertyCount++;
-        if (tags.contains("doesPlayerOwnCheapApt")) propertyCount++;
-        if (tags.contains("doesPlayerOwnSmallApt")) propertyCount++;
-        if (tags.contains("doesPlayerOwnUSBankOffice")) propertyCount++;
-        if (tags.contains("doesPlayerOwnFarm")) propertyCount++;
-        if (tags.contains("doesPlayerOwnBunker")) propertyCount++;
-        if (tags.contains("doesPlayerOwnDocksOffice")) propertyCount++;
-        return  propertyCount;
+        Property[] allProps = lang.allProps;
+        for (Property prop : allProps) {
+            String namespace = prop.getInfo().getNamespace();
+            if (tags.contains("propOwned." + namespace)) {
+                propertyCount++;
+            }
+        }
+        return propertyCount;
     }
 
     @EventHandler
