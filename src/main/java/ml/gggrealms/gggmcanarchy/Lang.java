@@ -81,6 +81,19 @@ public class Lang {
 
     public Property[] allProps = {cheapApartment,farm,usBankOffice,docksOffice};
 
+    public ArrayList<Property> getOwnedProps(Player player) {
+        Set<String> tags = player.getScoreboardTags();
+        ArrayList<Property> ownedProps = new ArrayList<Property>();
+        Property[] allProps = lang.allProps;
+        for (Property prop : allProps) {
+            String namespace = prop.getInfo().getNamespace();
+            if (tags.contains("propOwned." + namespace)) {
+                ownedProps.add(prop);
+            }
+        }
+        return ownedProps;
+    }
+    
     public String cheapAptStashTitle = "Cheap Apartment Stash";
     public String USBankOfficeStashTitle = "US Bank Office Stash";
     public String docksOfficeStash1Title = "Docks Office Stash p1";
