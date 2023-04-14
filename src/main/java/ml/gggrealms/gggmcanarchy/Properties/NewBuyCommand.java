@@ -52,7 +52,7 @@ public class NewBuyCommand implements CommandExecutor {
                         money -= cost;
                         rank += upkeep;
                         p.addScoreboardTag(propTag);
-
+                        p.performCommand("e");
                     }
                 } else {
                     p.sendMessage(lang.alreadyOwnProp(prop));
