@@ -40,6 +40,7 @@ public class NewBuyCommand implements CommandExecutor {
             int rank = cfg.getInt("players." + pU + "rank");
             Property[] props = lang.allProps;
             for (Property prop : props) {
+                if (lang.locationIsInCuboid(prop.getPos().getE1(), prop.getPos().getE2()) && !worked) {
                 int cost = prop.getInfo().getCost();
                 int upkeep = prop.getInfo().getUpkeep();
                 String propName = prop.getInfo().getName();
@@ -58,9 +59,11 @@ public class NewBuyCommand implements CommandExecutor {
                     p.sendMessage(lang.alreadyOwnProp(prop));
                     p.performCommand("e");
                 }
+                worked = true;
+                } else
             }
 
-            if (lang.locationIsInCuboid(p.getLocation(), new Location(w, 1043,68,-670), new Location(w, 1038, 62,-671))) {
+            if (lang.locationIsInCuboid(p.getLocation(), new Location(w, 1043,68,-670), new Location(w, 1038, 62,-671)) && !worked) {
                 //buy tools thing at farm
                 if (AnarchyPlugin.plugin.getFaction(p).equals("farmer")) {
                     if (money >= 500) {
