@@ -41,12 +41,44 @@ public class NewSafeCommand implements CommandExecutor {
                     int amt = cfg.getInt("players." + pUUID + ".safe." + namespace);
                     if (args.length == 0) {
                         lang.safeMenu(player, safe);
-                    } else if (args[0].equals("depo")) {
+                    } else if (args[0].equals("depo") && safe.getParameters[0]) {
                         int amtToDepo = money;
                         if (args.length == 2) {
                             amtToDepo = Integer.parseInt(args[1]);
                         }
-                        if (amt>money) { a
+                        if (amtToDepo > money) { 
+                            amtToDepo = money;
+                        }
+                        if (amtToDepo + amt > max) {
+                            amtToDepo = max - amt;
+                        }
+                        amt += amtToDepo;
+                        money -= amtToDepo;
+                    } else if (args[0].equals("with") && safe.getParameters[1]) {
+                        int amtToWith = amt;
+                        if (args.length == 2) {
+                            amtToWith = Integer.parseInt(args[1]);
+                        }
+                        if (amtToWith > amt) { 
+                            amtToWith = amt;
+                        }
+                        amt -= amtToWith;
+                        money += amtToWith;
+                    } else if (args[0].equals("sell") && safe.getParameters[2]) {
+                        if (args.length == 1) {
+                            player.sendMessage(lang.safeSellConfirm);
+                        } else if (args.length == 2 && args[1].equals("yes")) {
+                            int propCost = safe.getPropInfo.getCost();
+                            money += amt;
+                            amt = 0;
+                            player.removeScoreboardTag("propOwned." + safe.getPropInfo().getNamespace());
+                            money += cost;
+                            player.sendMessage(lang.propSellMessage);
+                        } else {
+                            player.sendMessage(lang.safeUsageError);
+                        }
+                    } else if (args[0].equals("send") && safe.getParameters[3]) {
+                        
                     }
                 }
             }
