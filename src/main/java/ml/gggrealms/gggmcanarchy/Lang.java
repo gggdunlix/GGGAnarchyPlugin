@@ -36,6 +36,7 @@ public class Lang {
 
     World w = Bukkit.getWorld("world");
 
+    public Component safeSellConfirm = Component.text("Are you sure you want to sell this property? You won't get the items in the stash back. You will keep the the amount the property cost and what was in the safe. If you are sure, please type /safe sell yes", TextColor.color(210, 11, 37)));
     public Component safeUsageError = Component.text("Wrong usage, try /safe maybe?", errorRed);
     public Component safeNegativeDepoErr = Component.text("Deposit a positive amount of money.", errorRed);
     public Component safeNegativeWithErr = Component.text("Withdraw a positive amount of money.", errorRed);
