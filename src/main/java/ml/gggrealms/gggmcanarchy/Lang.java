@@ -8,6 +8,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+
+import java.util.ArrayList;
+import java.util.Set;
 
 public class Lang {
     public TextColor errorRed = TextColor.color(210, 11, 37);
@@ -32,6 +36,27 @@ public class Lang {
 
     World w = Bukkit.getWorld("world");
 
+    public Component safeUsageError = Component.text("Wrong usage, try /safe maybe?", errorRed);
+    public Component safeNegativeDepoErr = Component.text("Deposit a positive amount of money.", errorRed);
+    public Component safeNegativeWithErr = Component.text("Withdraw a positive amount of money.", errorRed);
+    public Component safeDistanceError = Component.text("Not close enough to a bank/safe. Are you standing on the smooth stone?", errorRed);
+    public void safeMenu(Player player, PropertySafe safe) {
+        player.sendMessage("------" + safe.getName() + "------");
+        player.sendMessage(Component.text("Current Balance: ").append(Component.text("$", TextColor.color(84, 255, 88))).append(Component.text(AnarchyPlugin.plugin.getConfigFile().getInt("players." + player.identity().uuid() + ".safe." + safe.getNamespace()))).append(Component.text(" / $" +  safe.getMax())));
+        boolean[] param = safe.getSafeParameters();
+        if (param[0]) {
+            player.sendMessage("Deposit money: /safe depo <int amount>");
+        }
+        if (param[1]) {
+            player.sendMessage("Withdraw money: /safe with <int amount>");
+        }
+        if (param[3]) {
+            player.sendMessage("Send money: /safe send <String playerName> <int amount>");
+        }
+        if (param[2]) {
+            player.sendMessage(Component.text("Sell " + safe.getPropInfo().getName()+ ": /safe sell", TextColor.color(255, 205, 44)));
+        }
+    }
     public Component alreadyOwnProp(Property prop) {
         return Component.text("You already own " + prop.getInfo().getName() + ". Entering anyway.", errorRed);
     }
@@ -62,8 +87,8 @@ public class Lang {
     public PropertySafe docksOfficeSafe = new PropertySafe(docksOfficeI, new Location(w,679, 71, -823), new Location(w, 678, 69, -826));
     public PropertySafe bunkerSafe = new PropertySafe(bunkerI, new Location(w,762, 16, -612), new Location(w, 756, 12, -615));
     
-    public PropertySafe mbaBank1 = new PropertySafe("mbaBank", new Location(w, 855, 72, -893), new Location(w, 854, 68, -894), 300000);
-    public PropertySafe mbaBank2 = new PropertySafe("mbaBank", new Location(w, 851, 72, -893), new Location(w, 850, 68, -894), 300000);
+    public PropertySafe mbaBank1 = new PropertySafe("mbaBank", new Location(w, 855, 72, -893), new Location(w, 854, 68, -894), 300000, "Meugal Bank & Associates");
+    public PropertySafe mbaBank2 = new PropertySafe("mbaBank", new Location(w, 851, 72, -893), new Location(w, 850, 68, -894), 300000, "Meugal Bank & Associates");
 
     public PropertySafe[] allPropSafes = {cheapApartmentSafe,farmSafe,usBankOfficeSafe,docksOfficeSafe,bunkerSafe};
 
@@ -84,8 +109,8 @@ public class Lang {
     public ArrayList<Property> getOwnedProps(Player player) {
         Set<String> tags = player.getScoreboardTags();
         ArrayList<Property> ownedProps = new ArrayList<Property>();
-        Property[] allProps = lang.allProps;
-        for (Property prop : allProps) {
+        Property[] allProp = allProps;
+        for (Property prop : allProp) {
             String namespace = prop.getInfo().getNamespace();
             if (tags.contains("propOwned." + namespace)) {
                 ownedProps.add(prop);
@@ -101,8 +126,21 @@ public class Lang {
     public String docksOfficeStash3Title = "Docks Office Stash p3";
     public String farmStashTitle = "Farm Stash";
 
+    public Component propListHeader = Component.text("List of un-owned server properties:", TextColor.color(144, 255, 90));
+    public void propListMessage(Player player, Property prop) {
+        player.sendMessage(Component.text(prop.getInfo().getName() + ":", TextColor.color(255, 153, 44)));
+        Location propLoc = prop.getPos().getExitTP();
+        player.sendMessage(Component.text("|  -> Cost: $" + prop.getInfo().getCost(), TextColor.color(255, 255, 255)));
+        player.sendMessage(Component.text("|  -> Upkeep: $" + prop.getInfo().getUpkeep(), TextColor.color(255, 255, 255)));
+        player.sendMessage(Component.text("|  -> Safe Max $: $" + prop.getSafe().getMax(), TextColor.color(255, 255, 255)));
+        player.sendMessage(Component.text("|  -> Location: (" + propLoc.x() + ", " + propLoc.y() + ", " + propLoc.z() + ")", TextColor.color(255, 255, 255)));
+        if (player.getScoreboardTags().contains("propOwned." + prop.getInfo().getNamespace())) {
+            player.sendMessage(Component.text("|  -> Owned: true" , TextColor.color(66, 255, 62)));
+        } else {
+            player.sendMessage(Component.text("|  -> Owned: false" , TextColor.color(255, 37, 40)));
+        }
+    }
     public Component propAbilUsageError = Component.text("Invalid usage. Try using /pa to see available commands.", errorRed);
-
     public Component docksOfficeAbilOwnershipError = Component.text("You need to own 'Docks Office' to use this ability.", errorRed);
     public Component docksOfficeAbilDistanceError = Component.text("Go to the smooth stone at the back of the Docks Office to do this .", errorRed);
 

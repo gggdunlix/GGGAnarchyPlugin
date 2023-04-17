@@ -34,33 +34,34 @@ public class NewBuyCommand implements CommandExecutor {
             Player p = (Player) sender;
             World w = p.getWorld();
             UUID pU = p.identity().uuid();
+            Location pLoc = p.getLocation();
             Set<String> tags = p.getScoreboardTags();
             FileConfiguration cfg = AnarchyPlugin.plugin.getConfigFile();
-            int money = cfg.getInt("players." + pU + "money");
-            int rank = cfg.getInt("players." + pU + "rank");
+            int money = cfg.getInt("players." + pU + ".money");
+            int rank = cfg.getInt("players." + pU + ".rank");
             Property[] props = lang.allProps;
             for (Property prop : props) {
-                if (lang.locationIsInCuboid(prop.getPos().getE1(), prop.getPos().getE2()) && !worked) {
-                int cost = prop.getInfo().getCost();
-                int upkeep = prop.getInfo().getUpkeep();
-                String propName = prop.getInfo().getName();
-                String propNamespace = prop.getInfo().getNamespace();
-                String propTag = "propOwned." + propNamespace;
-                if (!tags.contains(propTag)) {
-                    if (cost > money) {
-                        p.sendMessage(lang.notEnoughMoney(money, cost));
+                if (lang.locationIsInCuboid(pLoc, prop.getPos().getE1(), prop.getPos().getE2()) && !worked) {
+                    int cost = prop.getInfo().getCost();
+                    int upkeep = prop.getInfo().getUpkeep();
+                    String propName = prop.getInfo().getName();
+                    String propNamespace = prop.getInfo().getNamespace();
+                    String propTag = "propOwned." + propNamespace;
+                    if (!tags.contains(propTag)) {
+                        if (cost > money) {
+                            p.sendMessage(lang.notEnoughMoney(money, cost));
+                        } else {
+                            money -= cost;
+                            rank += upkeep;
+                            p.addScoreboardTag(propTag);
+                            p.performCommand("e");
+                        }
                     } else {
-                        money -= cost;
-                        rank += upkeep;
-                        p.addScoreboardTag(propTag);
+                        p.sendMessage(lang.alreadyOwnProp(prop));
                         p.performCommand("e");
                     }
-                } else {
-                    p.sendMessage(lang.alreadyOwnProp(prop));
-                    p.performCommand("e");
+                    worked = true;
                 }
-                worked = true;
-                } else
             }
 
             if (lang.locationIsInCuboid(p.getLocation(), new Location(w, 1043,68,-670), new Location(w, 1038, 62,-671)) && !worked) {

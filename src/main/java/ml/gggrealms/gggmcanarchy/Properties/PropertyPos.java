@@ -20,6 +20,15 @@ public class PropertyPos {
         enterTPto = eTP;
         exitTPto = xTP;
     }
+    public PropertyPos(Location e1, Location e2, Location eTP, Location x1, Location x2, Location xTP) {
+        property = null;
+        enter1 = e1;
+        enter2 = e2;
+        exit1 = x1;
+        exit2 = x2;
+        enterTPto = eTP;
+        exitTPto = xTP;
+    }
     public Location getE1() {
         return enter1;
     }
