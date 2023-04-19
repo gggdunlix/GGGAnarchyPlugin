@@ -42,6 +42,8 @@ public class Lang {
     public Component safeNegativeDepoErr = Component.text("Deposit a positive amount of money.", errorRed);
     public Component safeNegativeWithErr = Component.text("Withdraw a positive amount of money.", errorRed);
     public Component safeDistanceError = Component.text("Not close enough to a bank/safe. Are you standing on the smooth stone?", errorRed);
+    public Component safeSendToPlayerError = Component.text("Couldn't find that player", errorRed);
+    public Component safeSendLessThan0 = Component.text("Send an amount greater than 0.", errorRed);
     public void safeMenu(Player player, PropertySafe safe) {
         player.sendMessage("------" + safe.getName() + "------");
         player.sendMessage(Component.text("Current Balance: ").append(Component.text("$", TextColor.color(84, 255, 88))).append(Component.text(AnarchyPlugin.plugin.getConfigFile().getInt("players." + player.identity().uuid() + ".safe." + safe.getNamespace()))).append(Component.text(" / $" +  safe.getMax())));

@@ -41,7 +41,7 @@ public class NewSafeCommand implements CommandExecutor {
                     int amt = cfg.getInt("players." + pUUID + ".safe." + namespace);
                     if (args.length == 0) {
                         lang.safeMenu(player, safe);
-                    } else if (args[0].equals("depo") && safe.getParameters[0]) {
+                    } else if (args[0].equals("depo") && safe.getSafeParameters()[0]) {
                         int amtToDepo = money;
                         if (args.length == 2) {
                             amtToDepo = Integer.parseInt(args[1]);
@@ -54,7 +54,7 @@ public class NewSafeCommand implements CommandExecutor {
                         }
                         amt += amtToDepo;
                         money -= amtToDepo;
-                    } else if (args[0].equals("with") && safe.getParameters[1]) {
+                    } else if (args[0].equals("with") && safe.getSafeParameters()[1]) {
                         int amtToWith = amt;
                         if (args.length == 2) {
                             amtToWith = Integer.parseInt(args[1]);
@@ -64,21 +64,31 @@ public class NewSafeCommand implements CommandExecutor {
                         }
                         amt -= amtToWith;
                         money += amtToWith;
-                    } else if (args[0].equals("sell") && safe.getParameters[2]) {
+                    } else if (args[0].equals("sell") && safe.getSafeParameters()[2]) {
                         if (args.length == 1) {
                             player.sendMessage(lang.safeSellConfirm);
                         } else if (args.length == 2 && args[1].equals("yes")) {
-                            int propCost = safe.getPropInfo.getCost();
+                            int propCost = safe.getPropInfo().getCost();
                             money += amt;
                             amt = 0;
                             player.removeScoreboardTag("propOwned." + safe.getPropInfo().getNamespace());
-                            money += cost;
+                            money += propCost;
                             player.sendMessage(lang.propSellMessage);
                         } else {
                             player.sendMessage(lang.safeUsageError);
                         }
-                    } else if (args[0].equals("send") && safe.getParameters[3]) {
-                        
+                    } else if (args[0].equals("send") && safe.getSafeParameters()[3]) {
+                        if (args.length != 3) {
+                            player.sendMessage(lang.safeUsageError);
+                        } else {
+                            Player toSendTo = Bukkit.getPlayer(args[1]);
+                            int sendAmt = Integer.parseInt(args[2]);
+                            if (toSendTo == null) {
+                                player.sendMessage(lang.safeSendToPlayerError);
+                            } else if (!(sendAmt > 0));
+                        }
+                    } else {
+                        player.sendMessage(lang.safeUsageError);
                     }
                 }
             }
@@ -86,7 +96,6 @@ public class NewSafeCommand implements CommandExecutor {
         if (!worked) {
             player.sendMessage(lang.safeDistanceError);
         }
-
         if (locationIsInCuboid(playerLoc, new Location(w, 855, 72, -893), new Location(w, 854, 68, -894)) || locationIsInCuboid(playerLoc, new Location(w, 851, 72, -893), new Location(w, 850, 68, -894))) {
             if (args.length == 0) {
                 //Muegel Bank and Associates teller windows:
